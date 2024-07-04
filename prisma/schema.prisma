@@ -17,6 +17,7 @@ model User {
   id                  String        @id @default(nanoid())
   email               String        @unique
   name                String?
+  credits             Int           @default(0)
 
   createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
   updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
@@ -34,10 +35,12 @@ model Agent {
   description         String
   configs             Json?
   tools               Json?
-  isPublic            Boolean       @default(false) @map("is_public")
   logoUrl             String?       @map("logo_url")
+  isPublic            Boolean       @default(false) @map("is_public")
+  isUsingBrowsing     Boolean       @default(false) @map("is_using_browsing")
   userId              String        @map("user_id")
 
+  verifiedAt          DateTime?     @db.Timestamptz(3) @map("verified_at")
   createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
   updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
 
@@ -64,6 +67,7 @@ model InstalledAgent {
 
 model History {
   id                  String        @id @default(nanoid())
+  title               String
   userId              String        @map("user_id")
   messages            Json[]
 
