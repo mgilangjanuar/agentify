@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String        @id @default(nanoid())
+  email               String        @unique
+  name                String?
+
+  createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
+  updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
+
+  agents              Agent[]
+  installedAgents     InstalledAgent[]
+  histories           History[]
+
+  @@map("users")
+}
+
+model Agent {
+  id                  String        @id @default(nanoid())
+  name                String
+  description         String
+  configs             Json?
+  tools               Json?
+  isPublic            Boolean       @default(false) @map("is_public")
+  logoUrl             String?       @map("logo_url")
+  userId              String        @map("user_id")
+
+  createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
+  updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
+
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  installedAgents     InstalledAgent[]
+
+  @@map("agents")
+}
+
+model InstalledAgent {
+  id                  String        @id @default(nanoid())
+  agentId             String        @map("agent_id")
+  userId              String        @map("user_id")
+  configs             Json?
+
+  createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
+  updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
+
+  agent               Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("installed_agents")
+}
+
+model History {
+  id                  String        @id @default(nanoid())
+  userId              String        @map("user_id")
+  messages            Json[]
+
+  createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
+  updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
+
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("histories")
+}
