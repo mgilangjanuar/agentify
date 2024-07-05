@@ -12,7 +12,6 @@ export const GET = authorization(async (req) => {
   return NextResponse.json(data)
 })
 
-
 export const POST = authorization(async (req) => {
   const body = await req.json() as {
     name: string,
