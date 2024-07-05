@@ -28,6 +28,7 @@ export const PATCH = authorization(async (req, { params }: { params: { id: strin
     system?: string,
     isPublic?: boolean,
     isUsingBrowsing?: boolean,
+    logoUrl?: string,
   }
 
   const data = await prisma.agent.update({
@@ -35,7 +36,14 @@ export const PATCH = authorization(async (req, { params }: { params: { id: strin
       id: params.id,
       userId: req.user.id
     },
-    data: body
+    data: {
+      name: body.name,
+      description: body.description,
+      system: body.system,
+      isPublic: body.isPublic,
+      isUsingBrowsing: body.isUsingBrowsing,
+      logoUrl: body.logoUrl,
+    }
   })
 
   return NextResponse.json(data)

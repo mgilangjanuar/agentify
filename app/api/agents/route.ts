@@ -20,11 +20,17 @@ export const POST = authorization(async (req) => {
     system?: string,
     isPublic?: boolean,
     isUsingBrowsing?: boolean,
+    logoUrl?: string,
   }
 
   const data = await prisma.agent.create({
     data: {
-      ...body,
+      name: body.name,
+      description: body.description,
+      system: body.system,
+      isPublic: body.isPublic,
+      isUsingBrowsing: body.isUsingBrowsing,
+      logoUrl: body.logoUrl,
       userId: req.user.id
     }
   })
