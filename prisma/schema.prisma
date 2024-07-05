@@ -33,6 +33,7 @@ model Agent {
   id                  String        @id @default(nanoid())
   name                String
   description         String
+  system              String?
   configs             Json?
   tools               Json?
   logoUrl             String?       @map("logo_url")

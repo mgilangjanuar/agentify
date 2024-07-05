@@ -22,7 +22,7 @@ export const hit = async (url: string, init?: RequestInit) => {
       })
       const json = await resp.json()
       if (resp.ok) {
-        return f(json.access_token)
+        return f(json.id_token)
       }
       if (window && json.refresh_token) {
         localStorage.setItem('refresh_token', json.refresh_token)

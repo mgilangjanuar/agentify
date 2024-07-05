@@ -5,6 +5,7 @@ export type AuthUser = {
   id: string,
   email: string,
   name?: string | null,
+  isSuperAdmin?: boolean,
   profile: {
     iss: string
     azp: string
@@ -82,6 +83,7 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
 
       req.user = {
         ...user,
+        isSuperAdmin: (process.env.SUPERADMINS || '').split(',').includes(user.email),
         profile: json
       }
     } catch (error) {
