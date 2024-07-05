@@ -1,29 +1,32 @@
 import { prisma } from '@/lib/db'
+import { NextResponse } from 'next/server'
+
+export type AuthUser = {
+  id: string,
+  email: string,
+  name?: string | null,
+  profile: {
+    iss: string
+    azp: string
+    aud: string
+    sub: string
+    email: string
+    email_verified: string
+    at_hash: string
+    name: string
+    picture: string
+    given_name: string
+    family_name: string
+    iat: string
+    exp: string
+    alg: string
+    kid: string
+    typ: string
+  }
+}
 
 export type ReqWithUser = Request & {
-  user: {
-    id: string,
-    email: string,
-    name?: string | null,
-    profile: {
-      iss: string
-      azp: string
-      aud: string
-      sub: string
-      email: string
-      email_verified: string
-      at_hash: string
-      name: string
-      picture: string
-      given_name: string
-      family_name: string
-      iat: string
-      exp: string
-      alg: string
-      kid: string
-      typ: string
-    }
-  }
+  user: AuthUser
 }
 
 export const authorization = (handler: (req: ReqWithUser) => void | Promise<void> | Response | Promise<Response>) => {
@@ -32,9 +35,9 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
     const token = req.headers.get('authorization')?.replace('Bearer ', '') || cookies?.find(cookie => cookie[0] === 'access_token')?.[1]
     console.log(token)
     if (!token)  {
-      return new Response(JSON.stringify({
+      return NextResponse.json({
         error: 'Unauthorized'
-      }), {
+      }, {
         status: 401,
         headers: {
           'Content-Type': 'application/json',
@@ -45,9 +48,9 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
     try {
       const profile = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`)
       if (!profile.ok) {
-        return new Response(JSON.stringify({
+        return NextResponse.json({
           error: 'Unauthorized'
-        }), {
+        }, {
           status: 401,
           headers: {
             'Content-Type': 'application/json',
@@ -67,9 +70,9 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
         }
       })
       if (!user) {
-        return new Response(JSON.stringify({
+        return NextResponse.json({
           error: 'Unauthorized'
-        }), {
+        }, {
           status: 401,
           headers: {
             'Content-Type': 'application/json',
@@ -82,9 +85,9 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
         profile: json
       }
     } catch (error) {
-      return new Response(JSON.stringify({
+      return NextResponse.json({
         error: 'Unauthorized'
-      }), {
+      }, {
         status: 401,
         headers: {
           'Content-Type': 'application/json',

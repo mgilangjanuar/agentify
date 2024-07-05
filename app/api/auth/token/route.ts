@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import { NextResponse } from 'next/server'
 
 export const POST = async (req: Request) => {
   const { code } = await req.json() as {
@@ -6,9 +7,9 @@ export const POST = async (req: Request) => {
   }
 
   if (!code) {
-    return new Response(JSON.stringify({
+    return NextResponse.json({
       error: 'Code is required'
-    }), {
+    }, {
       status: 400,
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +34,7 @@ export const POST = async (req: Request) => {
   const data = await resp.json() as any
 
   if (!resp.ok) {
-    return new Response(JSON.stringify(data), {
+    return NextResponse.json(data, {
       status: 400,
       headers: {
         'Content-Type': 'application/json',
@@ -44,9 +45,9 @@ export const POST = async (req: Request) => {
   try {
     const profile = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${data.id_token}`)
     if (!profile.ok) {
-      return new Response(JSON.stringify({
+      return NextResponse.json({
         error: 'Invalid token'
-      }), {
+      }, {
         status: 401,
         headers: {
           'Content-Type': 'application/json',
@@ -69,9 +70,9 @@ export const POST = async (req: Request) => {
       })
     }
   } catch (error) {
-    return new Response(JSON.stringify({
+    return NextResponse.json({
       error: 'Invalid token'
-    }), {
+    }, {
       status: 401,
       headers: {
         'Content-Type': 'application/json',
@@ -79,10 +80,15 @@ export const POST = async (req: Request) => {
     })
   }
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  const result = NextResponse.json(data)
+  result.cookies.set({
+    name: 'access_token',
+    value: data.id_token,
+    maxAge: 20 * 24 * 60 * 60,
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production'
   })
+
+  return result
 }

@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server'
+
 export const POST = async (req: Request) => {
   const { token } = await req.json() as { token: string }
 
@@ -28,7 +30,7 @@ export const POST = async (req: Request) => {
   const data = await resp.json()
 
   if (!resp.ok) {
-    return new Response(JSON.stringify(data), {
+    return NextResponse.json(data, {
       status: 400,
       headers: {
         'Content-Type': 'application/json',
@@ -36,10 +38,15 @@ export const POST = async (req: Request) => {
     })
   }
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  const result = NextResponse.json(data)
+  result.cookies.set({
+    name: 'access_token',
+    value: data.id_token,
+    maxAge: 20 * 24 * 60 * 60,
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production'
   })
+
+  return result
 }

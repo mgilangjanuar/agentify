@@ -1,10 +1,8 @@
 'use client'
 
+import { AuthUser } from '@/app/api/_middlewares/authorization'
 import { hit } from '@/lib/hit'
-import { User } from '@prisma/client'
 import { Dispatch, ReactNode, SetStateAction, createContext, useCallback, useContext, useEffect, useState } from 'react'
-
-type AuthUser = Partial<User>
 
 export const UserContext = createContext<{
   user: AuthUser | null | undefined

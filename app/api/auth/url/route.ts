@@ -1,6 +1,8 @@
+import { NextResponse } from 'next/server'
+
 export const GET = async (req: Request) => {
   const params = new URL(req.url).searchParams
-  return new Response(JSON.stringify({
+  return NextResponse.json({
     url: `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
       client_id: process.env.GOOGLE_CLIENT_ID as string,
       redirect_uri: process.env.GOOGLE_REDIRECT_URI as string,
@@ -10,10 +12,5 @@ export const GET = async (req: Request) => {
       access_type: 'offline',
       prompt: 'consent',
     })}`
-  }), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   })
 }

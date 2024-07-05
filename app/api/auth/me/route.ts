@@ -1,10 +1,8 @@
 import { authorization, ReqWithUser } from '@/app/api/_middlewares/authorization'
+import { NextResponse } from 'next/server'
 
 export const GET = authorization(async (req: ReqWithUser) => {
-  return new Response(JSON.stringify({ user: req.user }), {
-    status: 401,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  return NextResponse.json({
+    user: req.user
   })
 })
