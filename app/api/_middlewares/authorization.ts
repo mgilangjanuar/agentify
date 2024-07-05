@@ -30,11 +30,10 @@ export type ReqWithUser = Request & {
   user: AuthUser
 }
 
-export const authorization = (handler: (req: ReqWithUser) => void | Promise<void> | Response | Promise<Response>) => {
-  return async (req: ReqWithUser) => {
+export const authorization = (handler: (req: ReqWithUser, params?: any) => void | Promise<void> | Response | Promise<Response>) => {
+  return async (req: ReqWithUser, params?: any) => {
     const cookies = req.headers.get('cookie')?.split(';').map(cookie => cookie.trim().split('='))
     const token = req.headers.get('authorization')?.replace('Bearer ', '') || cookies?.find(cookie => cookie[0] === 'access_token')?.[1]
-    console.log(token)
     if (!token)  {
       return NextResponse.json({
         error: 'Unauthorized'
@@ -97,6 +96,6 @@ export const authorization = (handler: (req: ReqWithUser) => void | Promise<void
       })
     }
 
-    return await handler(req)
+    return await handler(req, params)
   }
 }
