@@ -18,6 +18,7 @@ model User {
   email               String        @unique
   name                String?
   credits             Int           @default(0)
+  configs             Json?
 
   createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
   updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
