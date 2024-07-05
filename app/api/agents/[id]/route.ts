@@ -50,19 +50,12 @@ export const PATCH = authorization(async (req, { params }: { params: { id: strin
 })
 
 export const DELETE = authorization(async (req, { params }: { params: { id: string } }) => {
-  const data = await prisma.agent.delete({
+  await prisma.agent.delete({
     where: {
       id: params.id,
       userId: req.user.id
     }
   })
-  if (!data) {
-    return NextResponse.json({
-      error: 'Agent not found'
-    }, {
-      status: 404
-    })
-  }
 
   return NextResponse.json({})
 })
