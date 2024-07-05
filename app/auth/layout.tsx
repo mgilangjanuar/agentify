@@ -1,7 +1,7 @@
 'use client'
 
 import { useUser } from '@/components/use-user'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
 
 export default function AuthLayout({
@@ -11,13 +11,12 @@ export default function AuthLayout({
 }>) {
   const { user } = useUser()
   const r = useRouter()
-  const q = useSearchParams()
 
   useEffect(() => {
     if (user) {
-      r.replace(q.get('r') || '/dash')
+      r.replace('/')
     }
-  }, [user, r, q])
+  }, [user, r])
 
   return user === null ? <Suspense>
     <div className="container mx-auto py-6 min-h-svh flex items-center relative">
