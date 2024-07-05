@@ -63,20 +63,23 @@ model InstalledAgent {
 
   agent               Agent         @relation(fields: [agentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  histories           History[]
 
   @@map("installed_agents")
 }
 
 model History {
-  id                  String        @id @default(nanoid())
+  id                  String          @id @default(nanoid())
   title               String
-  userId              String        @map("user_id")
+  userId              String          @map("user_id")
+  installedAgentId    String?         @map("installed_agent_id")
   messages            Json[]
 
-  createdAt           DateTime      @default(now()) @db.Timestamptz(3) @map("created_at")
-  updatedAt           DateTime      @updatedAt      @db.Timestamptz(3) @map("updated_at")
+  createdAt           DateTime        @default(now()) @db.Timestamptz(3) @map("created_at")
+  updatedAt           DateTime        @updatedAt      @db.Timestamptz(3) @map("updated_at")
 
-  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  installedAgent      InstalledAgent? @relation(fields: [installedAgentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("histories")
 }

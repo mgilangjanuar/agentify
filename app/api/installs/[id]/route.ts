@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export const GET = authorization(async (req, { params }: { params: { id: string } }) => {
-  const data = await prisma.agent.findUnique({
+  const data = await prisma.installedAgent.findUnique({
     where: {
       id: params.id,
       userId: req.user.id
@@ -12,37 +12,36 @@ export const GET = authorization(async (req, { params }: { params: { id: string 
 
   if (!data) {
     return NextResponse.json({
-      error: 'Agent not found'
+      error: 'Installed agent not found'
     }, {
       status: 404
     })
   }
 
-  return NextResponse.json(data)
+  return NextResponse.json({
+    ...data,
+    configs: Object.keys(data.configs || {}).reduce((acc, key) => {
+      acc[key] = '******************'
+      return acc
+    }, {} as Record<string, string>)
+  })
 })
 
 export const PATCH = authorization(async (req, { params }: { params: { id: string } }) => {
   const body = await req.json() as {
-    name?: string,
-    description?: string,
-    system?: string,
-    isPublic?: boolean,
-    isUsingBrowsing?: boolean,
-    logoUrl?: string,
+    configs?: Record<string, string>
   }
 
-  await prisma.agent.update({
+  await prisma.installedAgent.update({
     where: {
       id: params.id,
       userId: req.user.id
     },
     data: {
-      name: body.name,
-      description: body.description,
-      system: body.system,
-      isPublic: body.isPublic,
-      isUsingBrowsing: body.isUsingBrowsing,
-      logoUrl: body.logoUrl,
+      configs: Object.keys(body.configs || {}).reduce((acc, key) => {
+        acc[key] = body.configs![key]
+        return acc
+      }, {} as Record<string, string>)
     }
   })
 
@@ -50,7 +49,7 @@ export const PATCH = authorization(async (req, { params }: { params: { id: strin
 })
 
 export const DELETE = authorization(async (req, { params }: { params: { id: string } }) => {
-  const data = await prisma.agent.delete({
+  const data = await prisma.installedAgent.delete({
     where: {
       id: params.id,
       userId: req.user.id
@@ -58,7 +57,7 @@ export const DELETE = authorization(async (req, { params }: { params: { id: stri
   })
   if (!data) {
     return NextResponse.json({
-      error: 'Agent not found'
+      error: 'Installed agent not found'
     }, {
       status: 404
     })

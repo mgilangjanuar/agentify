@@ -22,7 +22,7 @@ export const POST = authorization(async (req) => {
     logoUrl?: string,
   }
 
-  const data = await prisma.agent.create({
+  await prisma.agent.create({
     data: {
       name: body.name,
       description: body.description,
@@ -34,5 +34,5 @@ export const POST = authorization(async (req) => {
     }
   })
 
-  return NextResponse.json(data)
+  return NextResponse.json({})
 })
