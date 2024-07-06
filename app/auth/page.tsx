@@ -17,8 +17,8 @@ export default function Auth() {
   }, [])
 
   return <div className="w-full space-y-8">
-    <Link className="flex w-fit mx-auto gap-3 items-center justify-center" href="/">
-      <Image src="/logo.png" alt="logo" width={416} height={416} className="size-6 md:size-8" />
+    <Link className="flex w-fit mx-auto gap-2.5 items-center justify-center" href="/">
+      <Image src="/logo.png" alt="logo" width={728} height={728} className="size-6 md:size-8" />
       <h1 className="text-2xl font-bold leading-tight tracking-tighter md:text-3xl lg:leading-[1.1]">
         Agentify
       </h1>
