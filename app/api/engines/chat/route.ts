@@ -70,10 +70,13 @@ export const POST = authorization(async (req: ReqWithUser) => {
 
 Agent name: ${agent.agent.name}
 
-Agent description: ${agent.agent.description}` : 'You are a helpful assistant.',
-      tool_choice: {
+Agent description: ${agent.agent.description}${agent.agent.system ? `
+
+Follow the additional instructions:
+${agent.agent.system}` : ''}` : undefined,
+      tool_choice: agent?.agent.isUsingBrowsing || agent?.agent.tools ? {
         type: 'auto'
-      },
+      } : undefined,
       tools: [
         ...agent?.agent.isUsingBrowsing ? [
           {
