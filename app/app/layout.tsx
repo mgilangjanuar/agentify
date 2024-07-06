@@ -6,7 +6,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
-import { CircleUser, Menu } from 'lucide-react'
+import { CircleUser, LucideMoonStar, LucideSun, Menu } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -18,6 +19,7 @@ export default function AppLayout({
   children: React.ReactNode
 }>) {
   const { user, fetchUser } = useUser()
+  const { setTheme } = useTheme()
   const r = useRouter()
   const p = usePathname()
   const [open, setOpen] = useState(false)
@@ -62,7 +64,13 @@ export default function AppLayout({
               </Link>
             </nav>
           </div>
-          <div className="mt-auto py-4">
+          <div className="mt-auto py-2 px-2.5 lg:px-4">
+            <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
+              <LucideMoonStar className="size-4" />
+            </Button>
+            <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
+              <LucideSun className="size-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -111,7 +119,13 @@ export default function AppLayout({
                   Agent Store
                 </Link>
               </nav>
-              <div className="mt-auto">
+              <div className="mt-auto px-0.5">
+                <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
+                  <LucideMoonStar className="size-4" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
+                  <LucideSun className="size-4" />
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
