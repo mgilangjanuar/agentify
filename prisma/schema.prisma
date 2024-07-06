@@ -38,6 +38,7 @@ model Agent {
   configs             Json?
   tools               Json?
   logoUrl             String?       @map("logo_url")
+  raw                 Json?
   isPublic            Boolean       @default(false) @map("is_public")
   isUsingBrowsing     Boolean       @default(false) @map("is_using_browsing")
   userId              String        @map("user_id")

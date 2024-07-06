@@ -1,3 +1,5 @@
+import { cryptr } from '@/lib/crypto'
+import { prisma } from '@/lib/db'
 import { jsonrepair } from 'jsonrepair'
 
 export interface ClaudeContent {
@@ -300,4 +302,26 @@ export class Claude {
 
     return customReadable.pipeThrough(transformStream)
   }
+}
+
+export const getAnthropicKey = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    select: {
+      configs: true,
+      credits: true
+    },
+    where: {
+      id: userId
+    }
+  })
+  if (!user) {
+    throw new Error('User not found')
+  }
+  if (!(user.configs as Record<string, string> | undefined | null)?.['ANTHROPIC_API_KEY']) {
+    if (user.credits <= 0) {
+      throw new Error('No credits')
+    }
+    return undefined
+  }
+  return cryptr.decrypt((user.configs as Record<string, string>)['ANTHROPIC_API_KEY'])
 }

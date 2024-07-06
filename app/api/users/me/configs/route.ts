@@ -8,14 +8,14 @@ export const PATCH = authorization(async (req) => {
     'ANTHROPIC_API_KEY': string
   }
 
-  if (body.ANTHROPIC_API_KEY) {
+  if (body.ANTHROPIC_API_KEY !== undefined) {
     await prisma.user.update({
       where: {
         id: req.user.id
       },
       data: {
         configs: {
-          'ANTHROPIC_API_KEY': cryptr.encrypt(body.ANTHROPIC_API_KEY)
+          'ANTHROPIC_API_KEY': body.ANTHROPIC_API_KEY ? cryptr.encrypt(body.ANTHROPIC_API_KEY) : null
         }
       }
     })
