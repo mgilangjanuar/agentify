@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
-import { CircleUser, LucideMoonStar, LucideSun, Menu } from 'lucide-react'
+import { CircleUser, LucideBot, LucideMessageSquare, LucideMoonStar, LucideShoppingBag, LucideSun, Menu } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -48,18 +48,21 @@ export default function AppLayout({
                 href="/app"
                 className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
               >
+                <LucideMessageSquare className="size-4" />
                 Chat
               </Link>
               <Link
                 href="/app/studio"
                 className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
               >
-                Studio
+                <LucideBot className="size-4" />
+                My Agents
               </Link>
               <Link
                 href="/app/store"
                 className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
               >
+                <LucideShoppingBag className="size-4" />
                 Agent Store
               </Link>
             </nav>
@@ -102,6 +105,7 @@ export default function AppLayout({
                   href="/app"
                   className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
                 >
+                  <LucideMessageSquare className="size-4" />
                   Chat
                 </Link>
                 <Link
@@ -109,13 +113,15 @@ export default function AppLayout({
                   href="/app/studio"
                   className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
                 >
-                  Studio
+                  <LucideBot className="size-4" />
+                  My Agents
                 </Link>
                 <Link
                   onClick={() => setOpen(false)}
                   href="/app/store"
                   className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
                 >
+                  <LucideShoppingBag className="size-4" />
                   Agent Store
                 </Link>
               </nav>
