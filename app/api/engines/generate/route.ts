@@ -1,6 +1,7 @@
 import { authorization } from '@/app/api/_middlewares/authorization'
 import { AgentifyBrowser } from '@/lib/browser'
 import { Claude, ClaudeCompletionPayload, ClaudeContent, getAnthropicKey } from '@/lib/claude'
+import { prisma } from '@/lib/db'
 import { Google } from '@/lib/google'
 import { NextResponse } from 'next/server'
 
@@ -19,7 +20,7 @@ export const POST = authorization(async (req) => {
 
   let apiKey = undefined
   try {
-    apiKey = await getAnthropicKey(req.user.id)
+    apiKey = await getAnthropicKey(req.user.id, 2)
   } catch (error: any) {
     return NextResponse.json({
       error: error.message
@@ -177,7 +178,7 @@ Please utilize the provided tools to generate a valid list of tools that can be 
         if (content.name === 'search') {
           const query = content.input?.query
           const searchResults = await new Google().search(query)
-          console.log(`> search results (${query}): ${searchResults.items.length} items`)
+          console.log(`> search results (\`${query}\`): ${searchResults.items.length} items`)
           contents.push({
             type: 'tool_result',
             tool_use_id: content.id,
@@ -253,9 +254,20 @@ Please utilize the provided tools to generate a valid list of tools that can be 
     })
   }
 
-  return NextResponse.json({
-    messages
-  })
+  if (apiKey === undefined) {
+    await prisma.user.update({
+      where: {
+        id: req.user.id
+      },
+      data: {
+        credits: {
+          decrement: 2
+        }
+      }
+    })
+  }
+
+  return NextResponse.json({})
 })
 
 

@@ -20,9 +20,10 @@ export const GET = authorization(async (req: ReqWithUser) => {
     user: {
       ...user,
       configs: Object.keys(user.configs || {}).reduce((acc, key) => {
-        acc[key] = '******************'
+        acc[key] = (user.configs as Record<string, undefined>)?.[key]
+          ? '******************' : null
         return acc
-      }, {} as Record<string, string>)
+      }, {} as Record<string, string | null>)
     }
   })
 })

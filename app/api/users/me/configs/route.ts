@@ -15,7 +15,8 @@ export const PATCH = authorization(async (req) => {
       },
       data: {
         configs: {
-          'ANTHROPIC_API_KEY': body.ANTHROPIC_API_KEY ? cryptr.encrypt(body.ANTHROPIC_API_KEY) : null
+          'ANTHROPIC_API_KEY': body.ANTHROPIC_API_KEY
+            ? cryptr.encrypt(body.ANTHROPIC_API_KEY) : null
         }
       }
     })

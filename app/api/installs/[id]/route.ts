@@ -1,4 +1,5 @@
 import { authorization } from '@/app/api/_middlewares/authorization'
+import { cryptr } from '@/lib/crypto'
 import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
@@ -39,7 +40,7 @@ export const PATCH = authorization(async (req, { params }: { params: { id: strin
     },
     data: {
       configs: Object.keys(body.configs || {}).reduce((acc, key) => {
-        acc[key] = body.configs![key]
+        acc[key] = cryptr.encrypt(body.configs![key])
         return acc
       }, {} as Record<string, string>)
     }

@@ -304,7 +304,7 @@ export class Claude {
   }
 }
 
-export const getAnthropicKey = async (userId: string) => {
+export const getAnthropicKey = async (userId: string, minCredits: number = 1) => {
   const user = await prisma.user.findUnique({
     select: {
       configs: true,
@@ -317,8 +317,8 @@ export const getAnthropicKey = async (userId: string) => {
   if (!user) {
     throw new Error('User not found')
   }
-  if (!(user.configs as Record<string, string> | undefined | null)?.['ANTHROPIC_API_KEY']) {
-    if (user.credits <= 0) {
+  if (!(user.configs as Record<string, string | undefined | null> | undefined | null)?.['ANTHROPIC_API_KEY']) {
+    if (user.credits < minCredits) {
       throw new Error('No credits')
     }
     return undefined
