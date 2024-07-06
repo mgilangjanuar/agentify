@@ -5,6 +5,7 @@ export type AuthUser = {
   id: string,
   email: string,
   name?: string | null,
+  credits: number,
   isSuperAdmin?: boolean,
   profile: {
     iss: string
@@ -64,6 +65,7 @@ export const authorization = (handler: (req: ReqWithUser, params?: any) => void 
           id: true,
           email: true,
           name: true,
+          credits: true
         },
         where: {
           email: json.email
