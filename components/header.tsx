@@ -12,32 +12,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
-const MENUS = [
-  {
-    label: 'Products',
-    items: [
-      {
-        label: 'Product 1',
-        href: '/product-1',
-        description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero provident et, similique officia voluptatem'
-      },
-      {
-        label: 'Product 2',
-        href: '/product-2',
-        description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero provident et, similique officia voluptatem'
-      },
-      {
-        label: 'Product 3',
-        href: '/product-3',
-        description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero provident et, similique officia voluptatem'
-      },
-      {
-        label: 'Product 4',
-        href: '/product-4',
-        description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero provident et, similique officia voluptatem'
-      },
-    ]
-  },
+const MENUS: {
+  label: string
+  href?: string
+  items?: { label: string, href?: string, description?: string }[]
+}[] = [
   {
     label: 'Pricing',
     href: '/pricing',
@@ -99,7 +78,7 @@ export default function Header() {
           </Sheet>
 
           <Link href="/" className="gap-2.5 items-center hidden md:flex">
-            <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-8 h-8" />
+            <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-7 h-7" />
             <h1 className="text-lg font-bold leading-tight lg:leading-[1.1]">
               Agentify
             </h1>
@@ -151,11 +130,13 @@ export default function Header() {
         </div>
 
         <div className="flex gap-2 items-center">
-          <Button asChild>
-            {user === null ? <Link href="/auth">
+          {user !== undefined ? <Button asChild>
+            {user ? <Link href="/app">
+              My Agents
+            </Link> : <Link href="/auth">
               Login
-            </Link> : <></>}
-          </Button>
+            </Link>}
+          </Button> : <></>}
           <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
             <LucideMoonStar className="size-4" />
           </Button>

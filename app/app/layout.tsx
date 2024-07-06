@@ -1,5 +1,3 @@
-import Header from '@/components/header'
-
 export default function MainLayout({
   children,
 }: Readonly<{
@@ -7,7 +5,6 @@ export default function MainLayout({
 }>) {
   return <div>
     <div className="min-h-svh">
-      <Header />
       {children}
     </div>
   </div>
