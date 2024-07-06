@@ -14,7 +14,7 @@ export default function AuthLayout({
 
   useEffect(() => {
     if (user) {
-      r.replace('/')
+      r.replace('/app')
     }
   }, [user, r])
 

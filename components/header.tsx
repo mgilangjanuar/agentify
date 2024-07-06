@@ -52,12 +52,12 @@ export default function Header() {
               <SheetHeader>
                 <SheetTitle asChild className="!text-left text-lg">
                   <Link className="flex items-center gap-2.5" href="/" onClick={() => setOpen(false)}>
-                    <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-7 h-7" />
+                    <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
                     <span className="font-bold">Agentify</span>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
-              <div className="flex flex-col gap-3 py-4 pl-10">
+              <div className="flex flex-col gap-3 py-4 pl-9">
                 {MENUS.filter(m => !m.items?.length).map((menu, i) => (
                   <Link key={i} className={cn(p.startsWith(menu.href || '') ? 'text-foreground/80' : 'text-foreground/60 hover:text-foreground/80', 'font-normal')} href={menu.href || ''} onClick={() => setOpen(false)}>
                     {menu.label}
@@ -78,7 +78,7 @@ export default function Header() {
           </Sheet>
 
           <Link href="/" className="gap-2.5 items-center hidden md:flex">
-            <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-7 h-7" />
+            <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
             <h1 className="text-lg font-bold leading-tight lg:leading-[1.1]">
               Agentify
             </h1>
@@ -132,7 +132,7 @@ export default function Header() {
         <div className="flex gap-2 items-center">
           {user !== undefined ? <Button asChild>
             {user ? <Link href="/app">
-              My Agents
+              Dashboard
             </Link> : <Link href="/auth">
               Login
             </Link>}
@@ -144,7 +144,6 @@ export default function Header() {
             <LucideSun className="size-4" />
           </Button>
         </div>
-
       </div>
     </header>
   </div>

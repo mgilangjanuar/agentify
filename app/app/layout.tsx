@@ -1,11 +1,151 @@
-export default function MainLayout({
+'use client'
+
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { useUser } from '@/components/use-user'
+import { hit } from '@/lib/hit'
+import { cn } from '@/lib/utils'
+import { CircleUser, Menu } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+
+export default function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return <div>
-    <div className="min-h-svh">
-      {children}
+  const { user, fetchUser } = useUser()
+  const r = useRouter()
+  const p = usePathname()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (user === null) {
+      r.replace('/auth')
+    }
+  }, [user, r])
+
+  return <Suspense>
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <div className="hidden border-r bg-muted/40 md:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <Link href="/app" className="gap-2 items-center hidden md:flex">
+              <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
+              <h1 className="text-lg font-bold leading-tight lg:leading-[1.1]">
+                Agentify
+              </h1>
+            </Link>
+          </div>
+          <div className="flex-1">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              <Link
+                href="/app"
+                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
+              >
+                Chat
+              </Link>
+              <Link
+                href="/app/studio"
+                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
+              >
+                Studio
+              </Link>
+              <Link
+                href="/app/store"
+                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
+              >
+                Agent Store
+              </Link>
+            </nav>
+          </div>
+          <div className="mt-auto py-4">
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col">
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0 md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="flex flex-col">
+              <SheetHeader>
+                <SheetTitle asChild className="!text-left text-lg px-3">
+                  <Link className="flex items-center gap-3" href="/app" onClick={() => setOpen(false)}>
+                    <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
+                    <span className="font-bold">Agentify</span>
+                  </Link>
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="grid gap-2 text-md font-medium">
+                <Link
+                  onClick={() => setOpen(false)}
+                  href="/app"
+                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
+                >
+                  Chat
+                </Link>
+                <Link
+                  onClick={() => setOpen(false)}
+                  href="/app/studio"
+                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
+                >
+                  Studio
+                </Link>
+                <Link
+                  onClick={() => setOpen(false)}
+                  href="/app/store"
+                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
+                >
+                  Agent Store
+                </Link>
+              </nav>
+              <div className="mt-auto">
+              </div>
+            </SheetContent>
+          </Sheet>
+          <div className="w-full flex-1">
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                {user?.profile.picture ? <Image src={user.profile.picture} alt={user?.name!} width={96} height={96} className="h-7 w-7 rounded-full" /> : <CircleUser className="h-5 w-5" />}
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="hover:cursor-pointer" asChild>
+                <Link href="/app/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="hover:cursor-pointer !text-destructive" onClick={async () => {
+                await hit('/api/auth/destroy', {
+                  method: 'DELETE',
+                })
+                if (window) {
+                  localStorage.removeItem('refresh_token')
+                }
+                fetchUser()
+              }}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+        {children}
+      </div>
     </div>
-  </div>
+  </Suspense>
 }
