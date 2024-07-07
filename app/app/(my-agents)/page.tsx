@@ -47,7 +47,7 @@ export default function MyAgents() {
     </div>
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
-      <div className="space-y-4">
+      <div className="space-y-8">
         <div className="flex flex-col gap-2">
           <h3 className="text-md font-medium md:text-lg flex items-center gap-2">
             <LucideChevronRight className="h-4 w-4" />
