@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { hit } from '@/lib/hit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -23,18 +23,22 @@ export default function Settings() {
   const [loading, setLoading] = useState<boolean>(false)
   const form = useForm<z.infer<typeof configsSchema>>({
     resolver: zodResolver(configsSchema),
+    defaultValues: async () => {
+      try {
+        const data = await hit('/api/users/me')
+        if (!data.ok) throw new Error()
+
+        const { user } = await data.json()
+        return {
+          ANTHROPIC_API_KEY: user.configs?.ANTHROPIC_API_KEY,
+        }
+      } catch (error) {
+        return {
+          ANTHROPIC_API_KEY: '',
+        }
+      }
+    }
   })
-
-  const fetchConfigs = useCallback(async () => {
-    const data = await hit('/api/users/me')
-    const { user } = await data.json()
-    form.setValue('ANTHROPIC_API_KEY', user.configs.ANTHROPIC_API_KEY)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    fetchConfigs()
-  }, [fetchConfigs])
 
   const submit = async (data: z.infer<typeof configsSchema>) => {
     setLoading(true)
@@ -42,7 +46,6 @@ export default function Settings() {
       method: 'PATCH',
       body: JSON.stringify(data)
     })
-    fetchConfigs()
     toast('Success', {
       description: 'Configs updated',
     })
