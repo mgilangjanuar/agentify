@@ -29,6 +29,7 @@ export default function Settings() {
     const data = await hit('/api/users/me')
     const { user } = await data.json()
     form.setValue('ANTHROPIC_API_KEY', user.configs.ANTHROPIC_API_KEY)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
