@@ -241,9 +241,7 @@ Please utilize the provided tools to generate a valid list of tools that can be 
 
         if (content.name === 'generate_tools') {
           done = true
-          return NextResponse.json({
-            agent: content.input
-          })
+          return NextResponse.json(content.input)
         }
       }
     }
