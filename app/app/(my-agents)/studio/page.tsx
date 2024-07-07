@@ -8,10 +8,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Textarea } from '@/components/ui/textarea'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LucideSparkles } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const useCaseSchema = z.object({
+  useCase: z.string({ required_error: '' }),
+})
 
 export default function Studio() {
+  const [loading, setLoading] = useState(false)
+  const useCaseForm = useForm<z.infer<typeof useCaseSchema>>({
+    resolver: zodResolver(useCaseSchema),
+  })
+
+  const generate = async (data: z.infer<typeof useCaseSchema>) => {
+    console.log(data)
+  }
+
   return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">
     <Breadcrumb>
       <BreadcrumbList>
@@ -27,11 +48,31 @@ export default function Studio() {
       </BreadcrumbList>
     </Breadcrumb>
 
-    <div className="grid gap-6 xl:grid-cols-4 lg:grid-cols-3">
+    <div className="grid gap-6 lg:grid-cols-2">
 
-      <div></div>
+      <Form {...useCaseForm}>
+        <form onSubmit={useCaseForm.handleSubmit(generate)} className="space-y-4">
+          <FormField
+            control={useCaseForm.control}
+            name="useCase"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Use Case</FormLabel>
+                <Textarea {...field} placeholder="Write your use case in detail..." />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-end">
+            <Button type="submit" disabled={loading}>
+              <LucideSparkles className="w-4 h-4 mr-2" />
+              Generate
+            </Button>
+          </div>
+        </form>
+      </Form>
 
-      <Card className="relative xl:col-span-3 lg:col-span-2">
+      <Card className="relative">
         <CardHeader>
           <CardTitle>
             Studio
