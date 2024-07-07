@@ -96,13 +96,15 @@ export default function Chat() {
         })
 
         const titleJson = await resp.json() as { messages: ClaudeCompletionPayload['messages'] }
-        await hit('/api/histories', {
+        const history = await hit('/api/histories', {
           method: 'POST',
           body: JSON.stringify({
             title: (titleJson.messages.at(-1)?.content as ClaudeContent[])?.find(c => c.text)?.text || 'Untitled',
             messages: results,
           }),
         })
+        const historyJson = await history.json() as History
+        setSelect(historyJson.id)
       }
     }
 
