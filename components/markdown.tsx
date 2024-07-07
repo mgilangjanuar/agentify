@@ -45,7 +45,7 @@ export default function Markdown({ content }: { content: string }) {
         </h4>
       },
       p({ children }) {
-        return <p className="leading-7 [&:not(:first-child)]:mt-6 [&(:last-child)]:mb-6">
+        return <p className="leading-7 [&:not(:first-child)]:mt-6">
           {children}
         </p>
       },
