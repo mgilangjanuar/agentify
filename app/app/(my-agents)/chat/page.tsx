@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
 import { hit } from '@/lib/hit'
@@ -197,13 +198,13 @@ export default function Chat() {
           <ScrollArea className="!h-[calc(100svh-290px)]">
             <div className="space-y-6">
               {messages.map((message, index) => message.role === 'user' ? <>
-                {typeof message.content === 'string' ? <div className="flex w-full justify-end max-w-xl">
-                  <div key={index} className="bg-secondary px-6 py-4 rounded-lg">
+                {typeof message.content === 'string' ? <div className="flex w-full justify-end">
+                  <div key={index} className="bg-secondary px-6 py-4 rounded-lg max-w-xl">
                     <Markdown content={message.content} />
                   </div>
                 </div> : message.content.map((content, i) => <div key={i}>
-                  {content.type === 'text' ? <div className="flex w-full justify-end max-w-xl">
-                    <div className="bg-secondary px-6 py-4 rounded-lg">
+                  {content.type === 'text' ? <div className="flex w-full justify-end">
+                    <div className="bg-secondary px-6 py-4 rounded-lg max-w-xl">
                       <Markdown content={content.text!} />
                     </div>
                   </div> : <></>}
@@ -246,6 +247,12 @@ export default function Chat() {
                   </Collapsible> : <></>}
                 </div>)}
               </>)}
+              {loading ? <div className="flex items-center space-x-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div> : <></>}
             </div>
             <ScrollBar orientation="vertical" />
           </ScrollArea>
