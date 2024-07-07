@@ -14,6 +14,9 @@ import { z } from 'zod'
 
 const configsSchema = z.object({
   ANTHROPIC_API_KEY: z.string({ required_error: '' })
+    .refine(value => !value || value.startsWith('sk-ant-api'), {
+      message: 'Invalid API Key',
+    }),
 })
 
 export default function Settings() {
@@ -33,16 +36,6 @@ export default function Settings() {
   }, [fetchConfigs])
 
   const submit = async (data: z.infer<typeof configsSchema>) => {
-    if (data.ANTHROPIC_API_KEY && !data.ANTHROPIC_API_KEY.startsWith('sk-ant-api')) {
-      toast('Error', {
-        description: 'Invalid API Key',
-      })
-      form.setError('ANTHROPIC_API_KEY', {
-        type: 'manual',
-        message: 'Invalid API Key'
-      })
-      return
-    }
     setLoading(true)
     await hit('/api/users/me/configs', {
       method: 'PATCH',
