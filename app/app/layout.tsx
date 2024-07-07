@@ -48,13 +48,6 @@ export default function AppLayout({
                 href="/app"
                 className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
               >
-                <LucideMessageSquare className="size-4" />
-                Chat
-              </Link>
-              <Link
-                href="/app/studio"
-                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
-              >
                 <LucideBot className="size-4" />
                 My Agents
               </Link>
@@ -63,7 +56,7 @@ export default function AppLayout({
                 className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
               >
                 <LucideShoppingBag className="size-4" />
-                Agent Store
+                Store
               </Link>
             </nav>
           </div>
@@ -92,7 +85,7 @@ export default function AppLayout({
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <SheetHeader>
-                <SheetTitle asChild className="!text-left text-lg px-3">
+                <SheetTitle asChild className="!text-left text-lg px-2">
                   <Link className="flex items-center gap-3" href="/app" onClick={() => setOpen(false)}>
                     <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
                     <span className="font-bold">Agentify</span>
@@ -105,14 +98,6 @@ export default function AppLayout({
                   href="/app"
                   className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
                 >
-                  <LucideMessageSquare className="size-4" />
-                  Chat
-                </Link>
-                <Link
-                  onClick={() => setOpen(false)}
-                  href="/app/studio"
-                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/studio') ? 'bg-muted' : 'text-muted-foreground')}
-                >
                   <LucideBot className="size-4" />
                   My Agents
                 </Link>
@@ -122,7 +107,7 @@ export default function AppLayout({
                   className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p.startsWith('/app/store') ? 'bg-muted' : 'text-muted-foreground')}
                 >
                   <LucideShoppingBag className="size-4" />
-                  Agent Store
+                  Store
                 </Link>
               </nav>
               <div className="mt-auto px-0.5">

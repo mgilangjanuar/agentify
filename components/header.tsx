@@ -132,7 +132,7 @@ export default function Header() {
         <div className="flex gap-2 items-center">
           {user !== undefined ? <Button asChild>
             {user ? <Link href="/app">
-              Dashboard
+              My Agents
             </Link> : <Link href="/auth">
               Login
             </Link>}

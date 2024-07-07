@@ -22,15 +22,15 @@ export default function RootLayout({
         className={
           cn(GeistSans, 'min-h-screen bg-background font-sans antialiased')
         }>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            disableTransitionOnChange
-          >
-            <UserProvider>
-              {children}
-            </UserProvider>
-          </ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          disableTransitionOnChange
+        >
+          <UserProvider>
+            {children}
+          </UserProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
