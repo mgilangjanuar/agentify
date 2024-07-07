@@ -21,11 +21,11 @@ export const hit = async (url: string, init?: RequestInit) => {
         credentials: 'include'
       })
       const json = await resp.json()
-      if (resp.ok) {
-        return f(json.id_token)
-      }
       if (window && json.refresh_token) {
         localStorage.setItem('refresh_token', json.refresh_token)
+      }
+      if (resp.ok) {
+        return await f(json.id_token)
       }
     }
   }
