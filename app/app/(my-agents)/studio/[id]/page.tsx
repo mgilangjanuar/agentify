@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -18,15 +18,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { hit } from '@/lib/hit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ReloadIcon } from '@radix-ui/react-icons'
-import { LucideSave, LucideSparkles } from 'lucide-react'
+import { LucideArrowLeft, LucideSave, LucideSparkles } from 'lucide-react'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
-const useCaseSchema = z.object({
-  useCase: z.string({ required_error: '' }),
-})
 
 const agentSchema = z.object({
   name: z.string({ required_error: '' }),
@@ -37,56 +34,25 @@ const agentSchema = z.object({
   isPublic: z.boolean().optional(),
 })
 
-export default function Studio() {
+export default function StudioAgent() {
+  const { id } = useParams()
   const [loading, setLoading] = useState(false)
   const [resultSchema, setResultSchema] = useState<any>()
-  const useCaseForm = useForm<z.infer<typeof useCaseSchema>>({
-    resolver: zodResolver(useCaseSchema),
-  })
   const agentForm = useForm<z.infer<typeof agentSchema>>({
     resolver: zodResolver(agentSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      system: '',
-      logoUrl: '',
-      isUsingBrowsing: false,
-      isPublic: false,
+    defaultValues: async () => {
+      const resp = await hit(`/api/agents/${id}`)
+      const json = await resp.json()
+      setResultSchema(json.raw)
+      return json
     }
   })
 
-  const generate = async (data: z.infer<typeof useCaseSchema>) => {
-    setLoading(true)
-    const resp = await hit('/api/engines/generate', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-    setLoading(false)
-    const result = await resp.json()
-    agentForm.reset({
-      name: result.agent_name,
-      description: result.description,
-      system: '',
-      logoUrl: '',
-      isUsingBrowsing: false,
-      isPublic: false,
-    })
-    setResultSchema(result)
-  }
-
   const save = async (data: z.infer<typeof agentSchema>) => {
     setLoading(true)
-    const resp = await hit('/api/agents', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...data,
-        configs: resultSchema.configs,
-        tools: resultSchema.tools,
-        raw: {
-          ...resultSchema,
-          useCase: useCaseForm.getValues().useCase || '',
-        },
-      }),
+    await hit(`/api/agents/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
     })
     setLoading(false)
   }
@@ -100,44 +66,33 @@ export default function Studio() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
+        <BreadcrumbLink asChild>
+          <Link href="/app/studio">Studio</Link>
+        </BreadcrumbLink>
+          <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Studio</BreadcrumbPage>
+          <BreadcrumbPage>Edit Agent</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
 
     <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
 
-      <Form {...useCaseForm}>
-        <form onSubmit={useCaseForm.handleSubmit(generate)}>
-          <Card className="relative">
-            <CardHeader>
-              <CardTitle>
-                Studio
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={useCaseForm.control}
-                name="useCase"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Use Case</FormLabel>
-                    <Textarea {...field} placeholder="Write your use case in detail..." />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter className="flex justify-end w-full">
-              <Button type="submit" disabled={loading}>
-              {loading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <LucideSparkles className="w-4 h-4 mr-2" />}
-                Generate
-              </Button>
-            </CardFooter>
-          </Card>
-        </form>
-      </Form>
+      <Card className="relative !h-fit">
+        <CardHeader className="!pt-3">
+          <CardTitle className="flex gap-2 items-center flex-row">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/app/studio">
+                <LucideArrowLeft className="w-4 h-4" />
+              </Link>
+            </Button>
+            Studio
+          </CardTitle>
+          <CardDescription>
+            Create a new agent in the Studio.
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
       <Form {...agentForm}>
         <form onSubmit={agentForm.handleSubmit(save)} className="xl:col-span-2">

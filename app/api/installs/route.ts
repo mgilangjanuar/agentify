@@ -4,9 +4,17 @@ import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export const GET = authorization(async (req) => {
+  const params = new URL(req.url).searchParams
+
   const data = await prisma.installedAgent.findMany({
     where: {
-      userId: req.user.id
+      userId: req.user.id,
+      ...params.get('agentId') ? {
+        agentId: params.get('agentId') as string,
+      } : {}
+    },
+    include: {
+      agent: true
     }
   })
 

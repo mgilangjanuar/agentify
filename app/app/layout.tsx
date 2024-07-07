@@ -135,7 +135,7 @@ export default function AppLayout({
               <DropdownMenuItem className="hover:cursor-pointer" asChild>
                 <Link href="/app/settings">Settings</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:cursor-pointer !text-destructive" onClick={async () => {
+              <DropdownMenuItem className="hover:cursor-pointer !text-red-500" onClick={async () => {
                 await hit('/api/auth/destroy', {
                   method: 'DELETE',
                 })
