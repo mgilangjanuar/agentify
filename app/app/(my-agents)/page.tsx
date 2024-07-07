@@ -2,8 +2,12 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
 import { LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
 import Link from 'next/link'
@@ -55,12 +59,39 @@ export default function MyAgents() {
             </p>
             )}
           <div className="grid gap-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
-            {installedAgents?.map(({ agent }) => (
-              <Card key={agent.id} className="hover:cursor-pointer">
+            {installedAgents?.map(({ agent, id }) => (
+              <Card key={id} className="hover:cursor-pointer">
                 <CardHeader>
                   <CardTitle>{agent.name}</CardTitle>
                   <CardDescription className="line-clamp-3">{agent.description}</CardDescription>
                 </CardHeader>
+                <CardFooter className="flex gap-1.5 items-center">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="secondary" className="grow text-red-500">
+                        Uninstall
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-60">
+                      <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">Are you sure you want to uninstall this agent?</p>
+                        <div className="flex justify-end">
+                          <Button variant="destructive" onClick={async () => {
+                            await fetch(`/api/installs/${id}`, { method: 'DELETE' })
+                            fetchInstalledAgents()
+                          }}>
+                            Uninstall
+                          </Button>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <Button className="grow" asChild>
+                    <Link href={`/app/studio/${agent.id}`}>
+                      Chat
+                    </Link>
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </div>
@@ -104,9 +135,44 @@ export default function MyAgents() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  <Button variant="default" className="grow" disabled={!!installedAgents?.find(installedAgent => installedAgent.agentId === agent.id)}>
-                    Install
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="default" className="grow" disabled={!!installedAgents?.find(installedAgent => installedAgent.agentId === agent.id)}>
+                        Install
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader className="!text-left">
+                        <DialogTitle>
+                          {agent.name}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <form className="grid gap-4 py-4" onSubmit={async e => {
+                        e.preventDefault()
+                        const data = Object.fromEntries(new FormData(e.currentTarget).entries())
+                        await hit('/api/installs', {
+                          method: 'POST',
+                          body: JSON.stringify({ agentId: agent.id, configs: data }),
+                        })
+                        await fetchInstalledAgents()
+                      }}>
+                        {(agent.configs as any[])?.map(config => (
+                          <div key={config.id} className="space-y-2">
+                            <Label className="text-sm font-medium">{config.name}</Label>
+                            <Input name={config.name} />
+                            <p className="text-muted-foreground text-xs">
+                              {config.description}
+                            </p>
+                          </div>
+                        ))}
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button type="submit">Install</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </CardFooter>
               </Card>
             ))}
