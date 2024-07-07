@@ -87,7 +87,7 @@ export default function MyAgents() {
                     </PopoverContent>
                   </Popover>
                   <Button className="grow" asChild>
-                    <Link href={`/app/studio/${agent.id}`}>
+                    <Link href={`/app/chat/${id}`}>
                       Chat
                     </Link>
                   </Button>

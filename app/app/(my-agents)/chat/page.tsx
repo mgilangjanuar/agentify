@@ -17,15 +17,18 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
 import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
 import { History } from '@prisma/client'
+import { CaretSortIcon } from '@radix-ui/react-icons'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { LucideArrowLeft, LucideCornerDownLeft, LucidePlus, LucideTrash2 } from 'lucide-react'
+import { jsonrepair } from 'jsonrepair'
+import { LucideArrowLeft, LucideBot, LucideCornerDownLeft, LucidePlus, LucideTrash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -143,7 +146,7 @@ export default function Chat() {
                 key={index}
                 className={cn(
                   "hover:cursor-pointer flex flex-col items-start gap-1.5 rounded-lg p-3 text-left text-sm transition-all",
-                  select === history.id && "bg-muted/40"
+                  select === history.id && "bg-muted"
                 )}
                 onClick={() => {
                   setSelect(history.id)
@@ -169,7 +172,7 @@ export default function Chat() {
       </div>
 
       <Card className={cn('relative xl:col-span-3 lg:col-span-2', select ? 'block' : select === undefined ? 'hidden lg:block' : '')}>
-        <CardHeader className="flex items-center gap-3 justify-between flex-row">
+        <CardHeader className="flex items-center gap-3 justify-between flex-row !pt-3">
           <div className="flex items-center gap-3 truncate">
             <Button variant="ghost" size="icon" className="flex lg:hidden" onClick={() => {
               setSelect(undefined)
@@ -191,13 +194,57 @@ export default function Chat() {
           </Button> : <></>}
         </CardHeader>
         <CardContent className="pb-20">
-          <ScrollArea className="!h-[calc(100svh-310px)]">
+          <ScrollArea className="!h-[calc(100svh-290px)]">
             <div className="space-y-6">
-              {messages.map((message, index) => <>
-                <div key={index} className={cn(message.role === 'user' ? 'bg-secondary float-right max-w-xl px-6' : '!pt-10', 'py-4 rounded-lg')}>
-                  <Markdown content={typeof message.content === 'string' ? message.content : message.content.map(c => c.text).filter(Boolean).join('\n\n')} />
-                </div>
-                <div className="clear-both" />
+              {messages.map((message, index) => message.role === 'user' ? <>
+                {typeof message.content === 'string' ? <div className="flex w-full justify-end max-w-xl">
+                  <div key={index} className="bg-secondary px-6 py-4 rounded-lg">
+                    <Markdown content={message.content} />
+                  </div>
+                </div> : message.content.map((content, i) => <div key={i}>
+                  {content.type === 'text' ? <div className="flex w-full justify-end max-w-xl">
+                    <div className="bg-secondary px-6 py-4 rounded-lg">
+                      <Markdown content={content.text!} />
+                    </div>
+                  </div> : <></>}
+                </div>)}
+              </> : <>
+                {typeof message.content === 'string' ? <div>
+                  <div key={index} className="py-4 rounded-lg">
+                    <Markdown content={message.content} />
+                  </div>
+                </div> : message.content.map((content, i) => <div key={i}>
+                  {content.type === 'text' ? <Markdown content={content.text!} /> : <></>}
+                  {content.type === 'tool_use' ? <Collapsible className="space-y-2">
+                    <CollapsibleTrigger asChild>
+                      <div className="flex items-center gap-2 hover:cursor-pointer">
+                        <LucideBot className="h-3.5 w-3.5" />
+                        <span>
+                          Running: <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-medium">{content.name}</code>
+                        </span>
+                        <CaretSortIcon className="h-3.5 w-3.5" />
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      {messages.find(m => m.role === 'user' && Array.isArray(m.content) && m.content.find(c => c.tool_use_id === content.id)) ? <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted rounded-lg">
+                        {(() => {
+                          const message = messages.find(m => m.role === 'user' && Array.isArray(m.content) && m.content.find(c => c.tool_use_id === content.id))
+                          const text = (
+                            (message?.content as ClaudeContent[])
+                            .find(c => Array.isArray(c.content))
+                            ?.content as ClaudeContent[]
+                          )?.find(c => c.text)?.text
+                          if (!text) return '[done]'
+                          try {
+                            return JSON.stringify(JSON.parse(jsonrepair(text!)), null, 2)
+                          } catch (error) {
+                            return text
+                          }
+                        })()}
+                      </pre> : <></>}
+                    </CollapsibleContent>
+                  </Collapsible> : <></>}
+                </div>)}
               </>)}
             </div>
             <ScrollBar orientation="vertical" />

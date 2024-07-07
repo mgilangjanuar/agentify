@@ -8,6 +8,9 @@ export const GET = authorization(async (req, { params }: { params: { id: string 
     where: {
       id: params.id,
       userId: req.user.id
+    },
+    include: {
+      agent: true
     }
   })
 

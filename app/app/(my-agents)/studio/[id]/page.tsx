@@ -66,10 +66,12 @@ export default function StudioAgent() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbLink asChild>
-          <Link href="/app/studio">Studio</Link>
-        </BreadcrumbLink>
-          <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/app/studio">Studio</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbPage>Edit Agent</BreadcrumbPage>
         </BreadcrumbItem>
