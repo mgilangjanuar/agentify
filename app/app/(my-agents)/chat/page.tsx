@@ -40,7 +40,7 @@ export default function Chat() {
   const [loading, setLoading] = useState<boolean>(false)
 
   const fetchHistories = useCallback(async () => {
-    const resp = await hit('/api/histories')
+    const resp = await hit('/api/histories?installedAgentId=null')
     if (resp.ok) {
       const json = await resp.json()
       setHistories(json)

@@ -3,9 +3,13 @@ import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
 export const GET = authorization(async (req: ReqWithUser) => {
+  const params = new URL(req.url).searchParams
   const data = await prisma.history.findMany({
     where: {
       userId: req.user.id,
+      ...params.get('installedAgentId') ? {
+        installedAgentId: params.get('installedAgentId') === 'null' ? null : params.get('installedAgentId'),
+      } : {}
     },
     orderBy: {
       createdAt: 'desc',
