@@ -37,6 +37,10 @@ export default function Settings() {
       toast('Error', {
         description: 'Invalid API Key',
       })
+      form.setError('ANTHROPIC_API_KEY', {
+        type: 'manual',
+        message: 'Invalid API Key'
+      })
       return
     }
     setLoading(true)
