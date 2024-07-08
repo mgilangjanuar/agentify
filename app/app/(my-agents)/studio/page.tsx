@@ -108,7 +108,7 @@ export default function Studio() {
       </BreadcrumbList>
     </Breadcrumb>
 
-    <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
 
       <Form {...useCaseForm}>
         <form onSubmit={useCaseForm.handleSubmit(generate)}>
@@ -161,7 +161,7 @@ export default function Studio() {
             <CardContent>
               <ScrollArea className="w-full truncate">
                 <ScrollBar orientation="vertical" />
-                <div className="space-y-4 lg:!max-h-[calc(100svh-290px)]">
+                <div className="space-y-4 lg:!max-h-[calc(100svh-290px)] px-2.5">
                   <FormField
                     control={agentForm.control}
                     name="name"

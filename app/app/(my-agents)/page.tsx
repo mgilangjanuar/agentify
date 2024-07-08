@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
 import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
@@ -48,8 +49,8 @@ export default function MyAgents() {
     </div>
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
-      <div className="space-y-8">
-        <div className="flex gap-4 flex-nowrap">
+      <div className="space-y-10">
+        <div className="flex gap-2 flex-nowrap">
           <Card className="hover:cursor-pointer max-w-md w-full" onClick={() => r.push('/app/settings')}>
             <CardHeader>
               <CardTitle>
@@ -73,9 +74,10 @@ export default function MyAgents() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-md font-medium flex items-center gap-2 text-muted-foreground">
+          <h3 className="text-md font-medium flex flex-nowrap items-center gap-2 text-muted-foreground">
             <LucideChevronRight className="h-4 w-4" />
-            Installed
+            <span>Installed</span>
+            <Separator className="grow flex-1" />
           </h3>
           {installedAgents && !installedAgents.length && (
             <p className="text-sm text-muted-foreground">
@@ -97,9 +99,10 @@ export default function MyAgents() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-md font-medium flex items-center gap-2 text-muted-foreground">
+          <h3 className="text-md font-medium flex flex-nowrap items-center gap-2 text-muted-foreground">
             <LucideChevronRight className="h-4 w-4" />
-            Creator Space
+            <span>Creator Space</span>
+            <Separator className="grow flex-1" />
           </h3>
           <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
             {(agents || [])?.map(agent => (
@@ -115,7 +118,12 @@ export default function MyAgents() {
                     </div>
                   </div>
                   </CardHeader>
-                <CardFooter className="flex gap-2 items-center justify-end">
+                <CardFooter className="flex gap-3 items-center justify-end">
+                  <Button variant="ghost" asChild size="icon">
+                    <Link href={`/app/studio/${agent.id}`}>
+                      <LucideEdit3 className="h-4 w-4" />
+                    </Link>
+                  </Button>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="ghost" size="icon">
@@ -136,11 +144,6 @@ export default function MyAgents() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  <Button variant="ghost" asChild size="icon">
-                    <Link href={`/app/studio/${agent.id}`}>
-                      <LucideEdit3 className="h-4 w-4" />
-                    </Link>
-                  </Button>
                   {agent.installedAgents?.length ? <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="secondary" className="text-red-500">
