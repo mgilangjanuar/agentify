@@ -1,8 +1,9 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -175,31 +176,44 @@ export default function MyAgents() {
                         <DialogTitle>
                           {agent.name}
                         </DialogTitle>
+                        <DialogDescription>
+                          {agent.description}
+                        </DialogDescription>
                       </DialogHeader>
-                      <form className="grid gap-4 py-4" onSubmit={async e => {
-                        e.preventDefault()
-                        const data = Object.fromEntries(new FormData(e.currentTarget).entries())
-                        await hit('/api/installs', {
-                          method: 'POST',
-                          body: JSON.stringify({ agentId: agent.id, configs: data }),
-                        })
-                        await fetchInstalledAgents()
-                      }}>
-                        {(agent.configs as any[])?.map(config => (
-                          <div key={config.id} className="space-y-2">
-                            <Label className="text-sm font-medium">{config.name}</Label>
-                            <Input name={config.name} />
-                            <p className="text-muted-foreground text-xs">
-                              {config.description}
-                            </p>
+                      <div className="grid gap-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <Label>Available Tools:</Label>
+                          <div className="flex gap-2 flex-wrap">
+                            {(agent.tools as any[])?.map(tool => (
+                              <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
+                            ))}
                           </div>
-                        ))}
-                        <DialogFooter>
-                          <DialogClose asChild>
-                            <Button type="submit">Install</Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </form>
+                        </div>
+                        <form className="grid gap-4" onSubmit={async e => {
+                          e.preventDefault()
+                          const data = Object.fromEntries(new FormData(e.currentTarget).entries())
+                          await hit('/api/installs', {
+                            method: 'POST',
+                            body: JSON.stringify({ agentId: agent.id, configs: data }),
+                          })
+                          await fetchInstalledAgents()
+                        }}>
+                          {(agent.configs as any[])?.map(config => (
+                            <div key={config.id} className="space-y-2">
+                              <Label className="text-sm font-medium">{config.name}</Label>
+                              <Input name={config.name} />
+                              <p className="text-muted-foreground text-xs">
+                                {config.description}
+                              </p>
+                            </div>
+                          ))}
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="submit">Install</Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </form>
+                      </div>
                     </DialogContent>
                   </Dialog>}
                 </CardFooter>
