@@ -135,6 +135,9 @@ export default function AppLayout({
               <DropdownMenuItem className="hover:cursor-pointer" asChild>
                 <Link href="/app/settings">Settings</Link>
               </DropdownMenuItem>
+              {user?.isSuperAdmin ? <DropdownMenuItem className="hover:cursor-pointer" asChild>
+                <Link href="/app/admin/submissions">Admin Panel</Link>
+              </DropdownMenuItem> : <></>}
               <DropdownMenuItem className="hover:cursor-pointer !text-red-500" onClick={async () => {
                 await hit('/api/auth/destroy', {
                   method: 'DELETE',

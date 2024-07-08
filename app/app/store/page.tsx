@@ -11,9 +11,11 @@ import { hit } from '@/lib/hit'
 import { Agent } from '@prisma/client'
 import { LucideBot } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 export default function Store() {
+  const r = useRouter()
   const [tab, setTab] = useState<'all' | 'installed'>('all')
   const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[], user: { name: string } })[]>()
 
@@ -54,7 +56,11 @@ export default function Store() {
     <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
       {(agents || [])?.map(agent => (
         <Card key={agent.id}>
-          <CardHeader>
+          <CardHeader className={agent.installedAgents?.length ? 'hover:cursor-pointer' : ''} onClick={() => {
+            if (agent.installedAgents?.length) {
+              r.push(`/app/chat/${agent.installedAgents![0].id}`)
+            }
+          }}>
             <div className="flex gap-4 flex-nowrap">
               {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
                 <LucideBot className="h-6 w-6" />
@@ -110,6 +116,7 @@ export default function Store() {
                       {(agent.tools as any[])?.map(tool => (
                         <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
                       ))}
+                      {agent.isUsingBrowsing ? <Badge variant="secondary">browsing</Badge> : <></>}
                     </div>
                   </div>
                   <form className="grid gap-4" onSubmit={async e => {

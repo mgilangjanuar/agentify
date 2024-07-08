@@ -186,6 +186,7 @@ export default function MyAgents() {
                             {(agent.tools as any[])?.map(tool => (
                               <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
                             ))}
+                            {agent.isUsingBrowsing ? <Badge variant="secondary">browsing</Badge> : <></>}
                           </div>
                         </div>
                         <form className="grid gap-4" onSubmit={async e => {

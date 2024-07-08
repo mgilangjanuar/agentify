@@ -1,6 +1,7 @@
 'use client'
 
 import Markdown from '@/components/markdown'
+import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,6 +19,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Label } from '@/components/ui/label'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
@@ -208,7 +210,7 @@ export default function ChatAgent() {
               <LucideArrowLeft className="h-4 w-4" />
             </Button>
             <CardTitle className="!m-0 !h-9 truncate flex items-center">
-              Chat
+              {agent?.agent.name}
             </CardTitle>
           </div>
           {select ? <Button variant="ghost" className="!my-0" size="icon" onClick={async () => {
@@ -223,6 +225,20 @@ export default function ChatAgent() {
         <CardContent className="pb-20">
           <ScrollArea className="!h-[calc(100svh-290px)]">
             <div className="space-y-6 px-2.5">
+              {!messages?.length ? <div className="text-sm text-muted-foreground space-y-4">
+                <p>
+                  {agent?.agent.description}
+                </p>
+                <div className="flex items-center flex-wrap gap-2">
+                  <Label>Available Tools:</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {(agent?.agent.tools as any[])?.map(tool => (
+                      <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
+                    ))}
+                    {agent?.agent.isUsingBrowsing ? <Badge variant="secondary">browsing</Badge> : <></>}
+                  </div>
+                </div>
+              </div> : <></>}
               {messages.map((message, index) => message.role === 'user' ? <>
                 {typeof message.content === 'string' ? <div className="flex w-full justify-end">
                   <div key={index} className="bg-secondary px-6 py-4 rounded-lg max-w-xl">
