@@ -35,7 +35,7 @@ export default function AppLayout({
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link href="/app" className="gap-2 items-center hidden md:flex">
+            <Link href="/" className="gap-2 items-center hidden md:flex">
               <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
               <h1 className="text-lg font-bold leading-tight lg:leading-[1.1]">
                 Agentify

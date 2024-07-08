@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="flex flex-col gap-8 lg:col-span-2">
           <div className="space-y-4">
             <div>
-              <Image src="/logo.png" alt="Agentify" width={256} height={256} className="w-7 h-7" />
+              <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-16 h-16" />
             </div>
             <p className="leading-7 text-muted-foreground">
               Create and install AI agents to automate your tasks.
