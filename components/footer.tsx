@@ -20,7 +20,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 text-muted-foreground">
               <div className="flex gap-1.5 items-center">
                 <LucideGithub className="size-4" />
-                <a href="https://x.com/mgilangjanuar" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+                <a href="https://github.com/mgilangjanuar" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
                   @mgilangjanuar
                 </a>
               </div>
