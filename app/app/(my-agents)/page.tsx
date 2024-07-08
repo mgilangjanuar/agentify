@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
 import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
@@ -18,25 +19,30 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 export default function MyAgents() {
+  const { user } = useUser()
   const r = useRouter()
   const [installedAgents, setInstalledAgents] = useState<(InstalledAgent & { agent: Agent })[]>()
-  const [agents, setAgents] = useState<(Agent & { installedAgents?: InstalledAgent[] })[]>()
+  const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[] })[]>()
 
   const fetchAgents = useCallback(async () => {
-    const response = await fetch('/api/agents')
-    const data = await response.json()
-    setAgents(data)
-  }, [])
+    if (user) {
+      const response = await fetch('/api/agents')
+      const data = await response.json()
+      setAgents(data)
+    }
+  }, [user])
 
   useEffect(() => {
     fetchAgents()
   }, [fetchAgents])
 
   const fetchInstalledAgents = useCallback(async () => {
-    const response = await fetch('/api/installs')
-    const data = await response.json()
-    setInstalledAgents(data)
-  }, [])
+    if (user) {
+      const response = await fetch('/api/installs')
+      const data = await response.json()
+      setInstalledAgents(data)
+    }
+  }, [user])
 
   useEffect(() => {
     fetchInstalledAgents()
@@ -115,10 +121,10 @@ export default function MyAgents() {
                     </div>}
                     <div className="flex flex-col space-y-1.5 flex-1">
                       <CardTitle>{agent.name}</CardTitle>
-                      <CardDescription className="line-clamp-3">{agent.description}</CardDescription>
+                      <CardDescription className="line-clamp-2 min-h-[40px]">{agent.description}</CardDescription>
                     </div>
                   </div>
-                  </CardHeader>
+                </CardHeader>
                 <CardFooter className="flex gap-3 items-center justify-end">
                   <Button variant="ghost" asChild size="icon">
                     <Link href={`/app/studio/${agent.id}`}>
@@ -181,7 +187,7 @@ export default function MyAgents() {
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center flex-wrap gap-2">
                           <Label>Available Tools:</Label>
                           <div className="flex gap-2 flex-wrap">
                             {(agent.tools as any[])?.map(tool => (
@@ -225,10 +231,11 @@ export default function MyAgents() {
                   <LucidePlus className="h-4 w-4" />
                   New Agent
                 </CardTitle>
-                <CardDescription className="line-clamp-3">
+                <CardDescription className="line-clamp-2 min-h-[40px]">
                   Create a new agent using the Studio.
                 </CardDescription>
               </CardHeader>
+              <CardFooter className="min-h-[60px]"></CardFooter>
             </Card>
           </div>
         </div>
