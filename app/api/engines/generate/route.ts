@@ -265,35 +265,9 @@ Please utilize the provided tools to generate a valid list of tools that can be 
     })
   }
 
-  return NextResponse.json({})
+  return NextResponse.json({
+    error: 'Please try again.'
+  }, {
+    status: 500
+  })
 })
-
-
-
-// example response:
-// {
-//   "agent": {
-//     "agent_name": "Weather Checker",
-//     "description": "An autonomous agent that can check the weather for a given location using the OpenWeatherMap API.",
-//     "configs": [
-//       {
-//         "name": "OPENWEATHERMAP_API_KEY",
-//         "description": "API key for OpenWeatherMap. You can obtain this by signing up at https://openweathermap.org/api"
-//       }
-//     ],
-//     "tools": [
-//       {
-//         "name": "get_current_weather",
-//         "description": "Get the current weather for a specific location",
-//         "input_schema": "{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"The city name or location to check the weather for\"}},\"required\":[\"location\"]}",
-//         "execute": "function execute(input, configs) {\n  const apiKey = configs.OPENWEATHERMAP_API_KEY;\n  const location = encodeURIComponent(input.location);\n  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;\n  \n  return fetch(url)\n    .then(response => response.json())\n    .then(data => {\n      if (data.cod === 200) {\n        return {\n          location: data.name,\n          temperature: data.main.temp,\n          description: data.weather[0].description,\n          humidity: data.main.humidity,\n          windSpeed: data.wind.speed\n        };\n      } else {\n        throw new Error(data.message || 'Failed to fetch weather data');\n      }\n    });\n}"
-//       },
-//       {
-//         "name": "get_weather_forecast",
-//         "description": "Get a 5-day weather forecast for a specific location",
-//         "input_schema": "{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\",\"description\":\"The city name or location to get the weather forecast for\"}},\"required\":[\"location\"]}",
-//         "execute": "function execute(input, configs) {\n  const apiKey = configs.OPENWEATHERMAP_API_KEY;\n  const location = encodeURIComponent(input.location);\n  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${apiKey}&units=metric`;\n  \n  return fetch(url)\n    .then(response => response.json())\n    .then(data => {\n      if (data.cod === '200') {\n        return {\n          location: data.city.name,\n          forecast: data.list.map(item => ({\n            date: item.dt_txt,\n            temperature: item.main.temp,\n            description: item.weather[0].description,\n            humidity: item.main.humidity,\n            windSpeed: item.wind.speed\n          }))\n        };\n      } else {\n        throw new Error(data.message || 'Failed to fetch weather forecast');\n      }\n    });\n}"
-//       }
-//     ]
-//   }
-// }
