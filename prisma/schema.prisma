@@ -80,7 +80,7 @@ model History {
   updatedAt           DateTime        @updatedAt      @db.Timestamptz(3) @map("updated_at")
 
   user                User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  installedAgent      InstalledAgent? @relation(fields: [installedAgentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  installedAgent      InstalledAgent? @relation(fields: [installedAgentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("histories")
 }

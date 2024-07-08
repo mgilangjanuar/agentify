@@ -5,7 +5,17 @@ import { NextResponse } from 'next/server'
 export const GET = authorization(async (req) => {
   const data = await prisma.agent.findMany({
     where: {
-      userId: req.user.id
+      userId: req.user.id,
+    },
+    include: {
+      installedAgents: {
+        select: {
+          id: true
+        },
+        where: {
+          userId: req.user.id
+        }
+      }
     }
   })
 

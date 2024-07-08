@@ -40,6 +40,7 @@ const agentSchema = z.object({
 export default function Studio() {
   const [loading, setLoading] = useState(false)
   const [resultSchema, setResultSchema] = useState<any>()
+  const [useBlank, setUseBlank] = useState(false)
   const useCaseForm = useForm<z.infer<typeof useCaseSchema>>({
     resolver: zodResolver(useCaseSchema),
   })
@@ -71,12 +72,13 @@ export default function Studio() {
       isUsingBrowsing: false,
       isPublic: false,
     })
+    setUseBlank(false)
     setResultSchema(result)
   }
 
   const save = async (data: z.infer<typeof agentSchema>) => {
     setLoading(true)
-    const resp = await hit('/api/agents', {
+    await hit('/api/agents', {
       method: 'POST',
       body: JSON.stringify({
         ...data,
@@ -113,7 +115,7 @@ export default function Studio() {
           <Card className="relative">
             <CardHeader>
               <CardTitle>
-                Studio
+                Agent Studio
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -122,14 +124,23 @@ export default function Studio() {
                 name="useCase"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Use Case</FormLabel>
+                    <FormLabel>Scenario</FormLabel>
                     <Textarea {...field} placeholder="Write your use case in detail..." />
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </CardContent>
-            <CardFooter className="flex justify-end w-full">
+            <CardFooter className="flex justify-between w-full">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="useBlank" onCheckedChange={b => setUseBlank(!!b)} />
+                <label
+                  htmlFor="useBlank"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Use Blank Form
+                </label>
+              </div>
               <Button type="submit" disabled={loading}>
               {loading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <LucideSparkles className="w-4 h-4 mr-2" />}
                 Generate
@@ -139,7 +150,7 @@ export default function Studio() {
         </form>
       </Form>
 
-      <Form {...agentForm}>
+      {useBlank || resultSchema ? <Form {...agentForm}>
         <form onSubmit={agentForm.handleSubmit(save)} className="xl:col-span-2">
           <Card className="relative xl:col-span-2">
             <CardHeader>
@@ -278,7 +289,7 @@ export default function Studio() {
             </CardFooter>
           </Card>
         </form>
-      </Form>
+      </Form> : <div />}
     </div>
   </main>
 }

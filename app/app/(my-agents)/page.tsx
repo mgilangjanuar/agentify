@@ -9,7 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
-import { LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
+import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -17,7 +18,7 @@ import { useCallback, useEffect, useState } from 'react'
 export default function MyAgents() {
   const r = useRouter()
   const [installedAgents, setInstalledAgents] = useState<(InstalledAgent & { agent: Agent })[]>()
-  const [agents, setAgents] = useState<Agent[]>()
+  const [agents, setAgents] = useState<(Agent & { installedAgents?: InstalledAgent[] })[]>()
 
   const fetchAgents = useCallback(async () => {
     const response = await fetch('/api/agents')
@@ -48,8 +49,31 @@ export default function MyAgents() {
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
       <div className="space-y-8">
+        <div className="flex gap-4 flex-nowrap">
+          <Card className="hover:cursor-pointer max-w-md w-full" onClick={() => r.push('/app/settings')}>
+            <CardHeader>
+              <CardTitle>
+                Configure API Keys
+              </CardTitle>
+              <CardDescription>
+                Add the Anthropic API key to manage your agents.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          <Card className="hover:cursor-pointer max-w-md w-full" onClick={() => r.push('/app/chat')}>
+            <CardHeader>
+              <CardTitle>
+                Playground
+              </CardTitle>
+              <CardDescription>
+                Test your API key by chatting with the blank agent.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+
         <div className="flex flex-col gap-2">
-          <h3 className="text-md font-medium md:text-lg flex items-center gap-2">
+          <h3 className="text-md font-medium flex items-center gap-2 text-muted-foreground">
             <LucideChevronRight className="h-4 w-4" />
             Installed
           </h3>
@@ -58,66 +82,43 @@ export default function MyAgents() {
               You have not installed any agents yet. <Link className="underline" href="/app/studio">Create</Link> or <Link className="underline" href="/app/store">install</Link> an agent to get started.
             </p>
             )}
-          <div className="grid gap-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
-            {installedAgents?.map(({ agent, id }) => (
-              <Card key={id} className="hover:cursor-pointer">
-                <CardHeader>
-                  <CardTitle>{agent.name}</CardTitle>
-                  <CardDescription className="line-clamp-3">{agent.description}</CardDescription>
-                </CardHeader>
-                <CardFooter className="flex gap-1.5 items-center">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="secondary" className="grow text-red-500">
-                        Uninstall
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-60">
-                      <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">Are you sure you want to uninstall this agent?</p>
-                        <div className="flex justify-end">
-                          <Button variant="destructive" onClick={async () => {
-                            await fetch(`/api/installs/${id}`, { method: 'DELETE' })
-                            fetchInstalledAgents()
-                          }}>
-                            Uninstall
-                          </Button>
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <Button className="grow" asChild>
-                    <Link href={`/app/chat/${id}`}>
-                      Chat
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
+          <div className="grid gap-4 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 grid-cols-2">
+            {(installedAgents || [])?.map(({ agent, id }) => (
+              <div key={id} className="p-4 flex flex-col items-center gap-2 hover:cursor-pointer" onClick={() => r.push(`/app/chat/${id}`)}>
+                {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-20" alt={agent.name} /> : <div className="!w-20 !h-20 flex items-center justify-center rounded-lg bg-gray-200">
+                  <LucideBot className="h-12 w-12" />
+                </div>}
+                <p className="w-full text-center text-sm font-medium">
+                  {agent.name}
+                </p>
+              </div>
             ))}
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-md font-medium md:text-lg flex items-center gap-2">
+          <h3 className="text-md font-medium flex items-center gap-2 text-muted-foreground">
             <LucideChevronRight className="h-4 w-4" />
             Creator Space
           </h3>
-          <div className="grid gap-2 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
-            {agents?.map(agent => (
-              <Card key={agent.id} className="hover:cursor-pointer">
+          <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+            {(agents || [])?.map(agent => (
+              <Card key={agent.id}>
                 <CardHeader>
-                  <CardTitle>{agent.name}</CardTitle>
-                  <CardDescription className="line-clamp-3">{agent.description}</CardDescription>
-                </CardHeader>
-                <CardFooter className="flex gap-1.5 items-center">
-                  <Button variant="secondary" className="grow" asChild>
-                    <Link href={`/app/studio/${agent.id}`}>
-                      <LucideEdit3 className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                  <div className="flex gap-4">
+                    {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
+                      <LucideBot className="h-6 w-6" />
+                    </div>}
+                    <div className="flex flex-col space-y-1.5 flex-1">
+                      <CardTitle>{agent.name}</CardTitle>
+                      <CardDescription className="line-clamp-3">{agent.description}</CardDescription>
+                    </div>
+                  </div>
+                  </CardHeader>
+                <CardFooter className="flex gap-2 items-center justify-end">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="secondary" className="grow">
+                      <Button variant="ghost" size="icon">
                         <LucideTrash2 className="h-4 w-4 text-red-500" />
                       </Button>
                     </PopoverTrigger>
@@ -135,9 +136,34 @@ export default function MyAgents() {
                       </div>
                     </PopoverContent>
                   </Popover>
-                  <Dialog>
+                  <Button variant="ghost" asChild size="icon">
+                    <Link href={`/app/studio/${agent.id}`}>
+                      <LucideEdit3 className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  {agent.installedAgents?.length ? <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="secondary" className="text-red-500">
+                        Uninstall
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-60">
+                      <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">Are you sure you want to uninstall this agent?</p>
+                        <div className="flex justify-end">
+                          <Button variant="destructive" onClick={async () => {
+                            await fetch(`/api/installs/${agent.installedAgents![0].id}`, { method: 'DELETE' })
+                            fetchInstalledAgents()
+                            fetchAgents()
+                          }}>
+                            Uninstall
+                          </Button>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover> : <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="default" className="grow" disabled={!!installedAgents?.find(installedAgent => installedAgent.agentId === agent.id)}>
+                      <Button variant="default">
                         Install
                       </Button>
                     </DialogTrigger>
@@ -172,7 +198,7 @@ export default function MyAgents() {
                         </DialogFooter>
                       </form>
                     </DialogContent>
-                  </Dialog>
+                  </Dialog>}
                 </CardFooter>
               </Card>
             ))}
