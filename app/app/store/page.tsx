@@ -9,15 +9,13 @@ import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { hit } from '@/lib/hit'
 import { Agent } from '@prisma/client'
-import { LucideBot, LucideEdit3, LucideTrash2 } from 'lucide-react'
+import { LucideBot } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 export default function Store() {
   const [tab, setTab] = useState<'all' | 'installed'>('all')
-  const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[] })[]>()
+  const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[], user: { name: string } })[]>()
 
   const fetchAgents = useCallback(async () => {
     const resp = await hit(tab === 'installed' ? '/api/agents/public?installed=true' : '/api/agents/public')
@@ -67,7 +65,10 @@ export default function Store() {
               </div>
             </div>
           </CardHeader>
-          <CardFooter className="flex gap-3 items-center justify-end">
+          <CardFooter className="flex gap-3 items-center justify-between flex-nowrap">
+            <p className="text-muted-foreground truncate text-xs">
+              By <span className="font-medium">{agent.user.name}</span>
+            </p>
             {agent.installedAgents?.length ? <Popover>
               <PopoverTrigger asChild>
                 <Button variant="secondary" className="text-red-500">

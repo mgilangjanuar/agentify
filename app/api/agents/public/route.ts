@@ -26,6 +26,11 @@ export const GET = authorization(async (req) => {
         where: {
           userId: req.user.id
         }
+      },
+      user: {
+        select: {
+          name: true
+        }
       }
     }
   })
