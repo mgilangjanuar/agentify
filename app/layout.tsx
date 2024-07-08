@@ -8,7 +8,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Agentify',
-  description: 'Create and install agents to automate your tasks with Anthropic models',
+  description: 'Create and install AI agents to automate your tasks with Claude models',
 }
 
 export default function RootLayout({

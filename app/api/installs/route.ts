@@ -15,6 +15,11 @@ export const GET = authorization(async (req) => {
     },
     include: {
       agent: true
+    },
+    orderBy: {
+      agent: {
+        name: 'asc'
+      }
     }
   })
 

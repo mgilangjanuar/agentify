@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -54,6 +55,7 @@ export default function Header() {
                   <Link className="flex items-center gap-2.5" href="/" onClick={() => setOpen(false)}>
                     <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
                     <span className="font-bold">Agentify</span>
+                    <Badge variant="destructive">Alpha</Badge>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
@@ -82,6 +84,7 @@ export default function Header() {
             <h1 className="text-lg font-bold leading-tight lg:leading-[1.1]">
               Agentify
             </h1>
+            <Badge variant="destructive">Alpha</Badge>
           </Link>
 
           <NavigationMenu className="hidden md:flex">

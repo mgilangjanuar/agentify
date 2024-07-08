@@ -32,6 +32,9 @@ export const GET = authorization(async (req) => {
           name: true
         }
       }
+    },
+    orderBy: {
+      name: 'asc'
     }
   })
 

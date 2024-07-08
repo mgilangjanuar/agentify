@@ -27,6 +27,7 @@ import { LucideChevronRight, LucideSave, LucideSparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const useCaseSchema = z.object({
@@ -69,6 +70,12 @@ export default function Studio() {
     })
     setLoading(false)
     const result = await resp.json()
+    if (!resp.ok) {
+      toast('Error', {
+        description: result.error?.message || result.error || 'Something went wrong',
+      })
+      return
+    }
     agentForm.reset({
       name: result.agent_name,
       description: result.description,
@@ -87,11 +94,11 @@ export default function Studio() {
       method: 'POST',
       body: JSON.stringify({
         ...data,
-        configs: resultSchema.configs,
-        tools: resultSchema.tools,
+        configs: resultSchema?.configs || [],
+        tools: resultSchema?.tools || [],
         raw: {
-          ...resultSchema,
-          useCase: useCaseForm.getValues().useCase || '',
+          ...resultSchema || {},
+          useCase: useCaseForm.getValues()?.useCase || '',
         },
       }),
     })
