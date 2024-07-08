@@ -222,7 +222,7 @@ export default function ChatAgent() {
         </CardHeader>
         <CardContent className="pb-20">
           <ScrollArea className="!h-[calc(100svh-290px)]">
-            <div className="space-y-6">
+            <div className="space-y-6 px-2.5">
               {messages.map((message, index) => message.role === 'user' ? <>
                 {typeof message.content === 'string' ? <div className="flex w-full justify-end">
                   <div key={index} className="bg-secondary px-6 py-4 rounded-lg max-w-xl">

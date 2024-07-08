@@ -57,40 +57,33 @@ export default function MyAgents() {
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
       <div className="space-y-10">
-        <div className="grid gap-2 xl:grid-cols-3 grid-cols-2">
-          <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/settings')}>
-            <CardHeader>
-              <CardTitle>
-                Configure API Keys
-              </CardTitle>
-              <CardDescription>
-                Add the Anthropic API key to manage your agents.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/chat')}>
-            <CardHeader>
-              <CardTitle>
-                Playground
-              </CardTitle>
-              <CardDescription>
-                Test your API key by chatting with the blank agent.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <h3 className="text-md font-medium flex flex-nowrap items-center gap-2 text-muted-foreground">
-            <LucideChevronRight className="h-4 w-4" />
-            <span>Installed</span>
-            <Separator className="grow flex-1" />
-          </h3>
-          {installedAgents && !installedAgents.length && (
-            <p className="text-sm text-muted-foreground">
-              You have not installed any agents yet. <Link className="underline" href="/app/studio">Create</Link> or <Link className="underline" href="/app/store">install</Link> an agent to get started.
-            </p>
-            )}
+        {installedAgents &&  !installedAgents?.length ? <div className="grid gap-4">
+          <div className="grid gap-2 xl:grid-cols-3 grid-cols-2">
+            <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/settings')}>
+              <CardHeader>
+                <CardTitle>
+                  Configure API Keys
+                </CardTitle>
+                <CardDescription>
+                  Add the Anthropic API key to manage your agents.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/chat')}>
+              <CardHeader>
+                <CardTitle>
+                  Playground
+                </CardTitle>
+                <CardDescription>
+                  Test your API key by chatting with the blank agent.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            You have not installed any agents yet. <Link className="underline" href="/app/studio">Create</Link> or <Link className="underline" href="/app/store">install</Link> an agent to get started.
+          </p>
+        </div> : <div className="flex flex-col gap-2">
           <div className="grid gap-4 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 grid-cols-2">
             {(installedAgents || [])?.map(({ agent, id }) => (
               <div key={id} className="p-4 flex flex-col items-center gap-2 hover:cursor-pointer" onClick={() => r.push(`/app/chat/${id}`)}>
@@ -103,7 +96,7 @@ export default function MyAgents() {
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         <div className="flex flex-col gap-2">
           <h3 className="text-md font-medium flex flex-nowrap items-center gap-2 text-muted-foreground">
