@@ -1,3 +1,4 @@
+import Footer from '@/components/footer'
 import Header from '@/components/header'
 
 export default function MainLayout({
@@ -9,6 +10,7 @@ export default function MainLayout({
     <div className="min-h-svh">
       <Header />
       {children}
+      <Footer />
     </div>
   </div>
 }
