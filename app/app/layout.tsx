@@ -46,7 +46,7 @@ export default function AppLayout({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 href="/app"
-                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
+                className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' || p.startsWith('/app/studio') || p.startsWith('/app/chat') ? 'bg-muted' : 'text-muted-foreground')}
               >
                 <LucideBot className="size-4" />
                 My Agents
@@ -96,7 +96,7 @@ export default function AppLayout({
                 <Link
                   onClick={() => setOpen(false)}
                   href="/app"
-                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' ? 'bg-muted' : 'text-muted-foreground')}
+                  className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary', p === '/app' || p.startsWith('/app/studio') || p.startsWith('/app/chat') ? 'bg-muted' : 'text-muted-foreground')}
                 >
                   <LucideBot className="size-4" />
                   My Agents

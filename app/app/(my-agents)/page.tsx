@@ -50,8 +50,8 @@ export default function MyAgents() {
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
       <div className="space-y-10">
-        <div className="flex gap-2 flex-nowrap">
-          <Card className="hover:cursor-pointer max-w-md w-full" onClick={() => r.push('/app/settings')}>
+        <div className="grid gap-2 xl:grid-cols-3 grid-cols-2">
+          <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/settings')}>
             <CardHeader>
               <CardTitle>
                 Configure API Keys
@@ -61,7 +61,7 @@ export default function MyAgents() {
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="hover:cursor-pointer max-w-md w-full" onClick={() => r.push('/app/chat')}>
+          <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/chat')}>
             <CardHeader>
               <CardTitle>
                 Playground
@@ -108,7 +108,7 @@ export default function MyAgents() {
             {(agents || [])?.map(agent => (
               <Card key={agent.id}>
                 <CardHeader>
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 flex-nowrap">
                     {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
                       <LucideBot className="h-6 w-6" />
                     </div>}
