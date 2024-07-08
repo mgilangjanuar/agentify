@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
-import { CircleUser, LucideBot, LucideMessageSquare, LucideMoonStar, LucideShoppingBag, LucideSun, Menu } from 'lucide-react'
+import { CircleUser, LucideBot, LucideMoonStar, LucideShoppingBag, LucideSun, Menu } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -136,7 +136,7 @@ export default function AppLayout({
                 <Link href="/app/settings">Settings</Link>
               </DropdownMenuItem>
               {user?.isSuperAdmin ? <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                <Link href="/app/admin/submissions">Admin Panel</Link>
+                <Link href="/app/admin">Admin Panel</Link>
               </DropdownMenuItem> : <></>}
               <DropdownMenuItem className="hover:cursor-pointer !text-red-500" onClick={async () => {
                 await hit('/api/auth/destroy', {
