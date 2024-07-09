@@ -2,7 +2,9 @@
 
 An agent studio platform that utilizes Claude models to generate a specific agent for a particular task.
 
-![meme](/meme.jpg)
+![ss](/public/img1.png)
+
+Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
 
 ## Features
 
@@ -31,7 +33,7 @@ An agent studio platform that utilizes Claude models to generate a specific agen
     ```bash
     bun install
     ```
-3. Create a `.env` file and fill it with the required environment variables
+3. Create a `.env` file and fill it with the required [environment variables](#environment-variables)
 
     ```bash
     cp .env.example .env
@@ -64,19 +66,21 @@ bun run build && bun run start
 
 | Variable | Description | Required |
 | --- | --- | --- |
-| `NODE_ENV` | The environment mode | [x] |
-| `DATABASE_URL` | The database URL | [x] |
-| `SUPERADMINS` | The superadmins' email | [x] |
-| `SECRET` | The encryption secret | [x] |
-| `GOOGLE_CLIENT_ID` | The Google OAuth client ID | [x] |
-| `GOOGLE_CLIENT_SECRET` | The Google OAuth client secret | [x] |
-| `GOOGLE_REDIRECT_URI` | The Google OAuth redirect URI | [x] |
-| `GOOGLE_SEARCH_KEY` | The Google Search API key | [x] |
-| `GOOGLE_SEARCH_CX` | The Google Search CX | [x] |
-| `BROWSER_URL` | The Agentify Browser URL | [x] |
-| `BROWSER_SECRET` | The Agentify Browser secret | [x] |
-| `ANTHROPIC_API_KEY` | The Anthropic API key | [x] |
+| `NODE_ENV` | The environment mode | ✅ |
+| `DATABASE_URL` | The database URL | ✅ |
+| `SUPERADMINS` | The superadmins' email | ✅ |
+| `SECRET` | The encryption secret | ✅ |
+| `GOOGLE_CLIENT_ID` | The Google OAuth client ID | ✅ |
+| `GOOGLE_CLIENT_SECRET` | The Google OAuth client secret | ✅ |
+| `GOOGLE_REDIRECT_URI` | The Google OAuth redirect URI | ✅ |
+| `GOOGLE_SEARCH_KEY` | The Google Search API key | ✅ |
+| `GOOGLE_SEARCH_CX` | The Google Search CX | ✅ |
+| `BROWSER_URL` | The Agentify Browser URL | ✅ |
+| `BROWSER_SECRET` | The Agentify Browser secret | ✅ |
+| `ANTHROPIC_API_KEY` | The Anthropic API key | ✅ |
 
 ## License
 
 [MIT](/LICENSE.md)
+
+![meme](/meme.jpg)
