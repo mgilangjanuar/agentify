@@ -40,7 +40,7 @@ export default function Home() {
           </Button>
         </div>
         <Dialog>
-          <DialogTrigger className="underline underline-offset-4 lg:text-lg flex gap-2 items-center justify-center w-full">
+          <DialogTrigger className="!mt-5 underline underline-offset-4 lg:text-lg flex gap-2 items-center justify-center w-full">
             Watch Demo
             <LucideVideo className="w-5 h-5" />
           </DialogTrigger>

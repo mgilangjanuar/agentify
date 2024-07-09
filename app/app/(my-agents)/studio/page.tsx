@@ -329,7 +329,7 @@ export default function Studio() {
                     </div> : <></>}
                     <Separator />
                     <div className="flex justify-center">
-                      <Button className="flex items-center gap-2">
+                      <Button type="button" className="flex items-center gap-2">
                         Edit in Advanced Mode <Badge variant="secondary">soon</Badge>
                       </Button>
                     </div>
