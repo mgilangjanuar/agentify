@@ -142,7 +142,7 @@ export default function Home() {
     </div>
 
     <div className="container mx-auto pt-[20svh]">
-      <Marquee pauseOnHover className="[--duration:20s]">
+      <Marquee pauseOnHover className="[--duration:60s]">
         {(agents || [])?.map(agent => (
           <Card key={agent.id} className="hover:cursor-pointer" onClick={() => r.push('/app/store')}>
             <CardHeader>
