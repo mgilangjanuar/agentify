@@ -12,3 +12,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: SECRET=${{ secrets.SECRET }} bun run build
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: echo "Deploying..."
