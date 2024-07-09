@@ -12,14 +12,6 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: SECRET=${{ secrets.SECRET }} bun run build
-      - uses: actions/upload-artifact@master
-        with:
-          name: node_modules
-          path: node_modules
-      - uses: actions/upload-artifact@master
-        with:
-          name: build
-          path: .next
       - name: publish deps
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -28,4 +20,5 @@ jobs:
           target: ${{ secrets.SSH_PATH }}/node_modules
           username: ubuntu
           rm: true
+          strip_components: 2
           key: ${{ secrets.SSH_PRIVATE_KEY }}
