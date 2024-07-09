@@ -28,7 +28,9 @@ export default function MyAgents() {
     if (user) {
       const response = await fetch('/api/agents')
       const data = await response.json()
-      setAgents(data)
+      if (response.ok) {
+        setAgents(data)
+      }
     }
   }, [user])
 
@@ -40,7 +42,9 @@ export default function MyAgents() {
     if (user) {
       const response = await fetch('/api/installs')
       const data = await response.json()
-      setInstalledAgents(data)
+      if (response.ok) {
+        setInstalledAgents(data)
+      }
     }
   }, [user])
 
