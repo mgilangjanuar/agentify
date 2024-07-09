@@ -23,7 +23,8 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
+import { ClaudeCompletionPayload, ClaudeContent, ClaudeStreamResponse } from '@/lib/claude'
+import { ClaudeReceiver } from '@/lib/claude-receiver'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
 import { Agent, History, InstalledAgent } from '@prisma/client'
@@ -74,43 +75,91 @@ export default function ChatAgent() {
     }
   }, [id])
 
-  const sendMessage = async () => {
+  const sendMessage = async (payload?: ClaudeCompletionPayload['messages'], _select?: string) => {
     const content = ref.current?.value
-    if (!content?.trim()) return
+    if (!content?.trim() && !payload) return
 
-    const payload: ClaudeCompletionPayload['messages'] = [
+    payload = payload || [
       ...messages,
       {
         role: 'user',
-        content: content.trim()
+        content: content?.trim() || ''
       }
     ]
     setMesages(payload)
 
     setLoading(true)
-    const resp = await hit('/api/engines/chat', {
+    const resp = await hit('/api/engines/chat-stream', {
       method: 'POST',
-      body: JSON.stringify({
-        messages: payload,
-        installedAgentId: id
-      }),
+      body: JSON.stringify({ messages: payload, installedAgentId: id }),
     })
     setLoading(false)
 
-    const json = await resp.json()
     if (!resp.ok) {
+      const json = await resp.json()
       toast('Error', {
-        description: json.error?.message || json.error || 'Something went wrong',
+        description: json.error?.message || json.error || 'Something went wrong'
       })
       return
     }
 
-    setMesages(json.messages)
+    let json: ClaudeCompletionPayload['messages'] = [...payload, {
+      role: 'assistant',
+      content: []
+    }]
+
+    let text = ''
+    await ClaudeReceiver.consumeAsData(resp, (data) => {
+      const resp = data as ClaudeStreamResponse
+      if (resp.content_block) {
+        text = ''
+      }
+
+      if (resp.message?.role === 'user') {
+        json = [
+          ...payload,
+          resp.message as {
+            role: 'user' | 'assistant',
+            content: string | ClaudeContent[]
+          },
+          {
+            role: 'assistant',
+            content: []
+          }
+        ]
+      }
+
+      const last = json[json.length - 1]
+      text += resp.delta?.text || resp.delta?.partial_json || ''
+      if (resp.content_block || text) {
+        json = [...json.slice(0, -1), {
+          role: 'assistant',
+          content: resp.content_block ? [
+            ...last.content as ClaudeContent[] || [],
+            resp.content_block
+          ] : [
+            ...(last.content as ClaudeContent[] || []).slice(0, -1),
+            {
+              ...(last.content as ClaudeContent[] || [])[last.content.length - 1],
+              ...resp.delta?.text ? {
+                text: text
+              } : resp.delta?.partial_json ? {
+                input: JSON.parse(
+                  jsonrepair(text)
+                )
+              } : {}
+            }
+          ]
+        }]
+        setMesages(json)
+      }
+    })
+
     ref.current!.value = ''
 
-    const results = json.messages as ClaudeCompletionPayload['messages']
-    if (select) {
-      await hit(`/api/histories/${select}`, {
+    const results = json as ClaudeCompletionPayload['messages']
+    if (select || _select) {
+      await hit(`/api/histories/${select || _select}`, {
         method: 'PATCH',
         body: JSON.stringify({ messages: results }),
       })
@@ -138,9 +187,14 @@ export default function ChatAgent() {
       })
       const historyJson = await history.json() as History
       setSelect(historyJson.id)
+      _select = historyJson.id
     }
 
     fetchHistories()
+
+    if ((json.at(-1)?.content?.at(-1) as ClaudeContent)?.type === 'tool_use') {
+      await sendMessage(json, _select)
+    }
   }
 
   return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">

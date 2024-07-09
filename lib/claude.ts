@@ -140,7 +140,7 @@ export class Claude {
     return await resp.json() as ClaudeResponse
   }
 
-  async stream() {
+  async stream(initData?: any) {
     if (!this.payload) {
       throw new Error('No payload')
     }
@@ -168,6 +168,10 @@ export class Claude {
 
     return new ReadableStream<string>({
       async start(controller) {
+        if (initData) {
+          controller.enqueue(`\r\n\r\ndata: ${JSON.stringify(initData)}`)
+        }
+
         if (!resp?.body) return
         const reader = resp.body.getReader()
         const decoder = new TextDecoder()

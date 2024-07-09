@@ -21,7 +21,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
+import { ClaudeCompletionPayload, ClaudeContent, ClaudeStreamResponse } from '@/lib/claude'
+import { ClaudeReceiver } from '@/lib/claude-receiver'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
 import { History } from '@prisma/client'
@@ -70,24 +71,37 @@ export default function Chat() {
     setMesages(payload)
 
     setLoading(true)
-    const resp = await hit('/api/engines/chat', {
+    const resp = await hit('/api/engines/chat-stream', {
       method: 'POST',
       body: JSON.stringify({ messages: payload }),
     })
     setLoading(false)
 
-    const json = await resp.json()
     if (!resp.ok) {
+      const json = await resp.json()
       toast('Error', {
-        description: json.error?.message || json.error || 'Something went wrong',
+        description: json.error?.message || json.error || 'Something went wrong'
       })
       return
     }
 
-    setMesages(json.messages)
+    let json: ClaudeCompletionPayload['messages'] = payload
+    await ClaudeReceiver.consumeAsData(resp, (data) => {
+      const resp = data as ClaudeStreamResponse
+      const text = resp.delta?.text || resp.delta?.partial_json || ''
+      json = [...payload, {
+        role: 'assistant',
+        content: [{
+          type: 'text',
+          text: `${(json.at(-1)?.content as ClaudeContent[])?.[0]?.text || ''}${text}`
+        }]
+      }]
+      setMesages(json)
+    })
+
     ref.current!.value = ''
 
-    const results = json.messages as ClaudeCompletionPayload['messages']
+    const results = json as ClaudeCompletionPayload['messages']
     if (select) {
       await hit(`/api/histories/${select}`, {
         method: 'PATCH',

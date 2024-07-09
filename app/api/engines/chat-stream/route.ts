@@ -56,85 +56,19 @@ export const POST = authorization(async (req: ReqWithUser) => {
     }, {} as Record<string, string>)
   }
 
-  let done = false
-  while (!done) {
-    if (body.messages.at(-1)?.role !== 'user') {
-      done = true
-      break
-    }
+  const contents: ClaudeContent[] = []
 
-    const resp = await new Claude(apiKey ? { apiKey } : undefined).completion({
-      model: 'claude-3-5-sonnet-20240620',
-      messages: body.messages,
-      system: agent ? `You are an autonomous agent that can perform tasks based on the use case.
-
-Agent name: ${agent.agent.name}
-
-Agent description: ${agent.agent.description}${agent.agent.system ? `
-
-Follow the additional instructions:
-${agent.agent.system}` : ''}` : undefined,
-      tool_choice: agent?.agent.isUsingBrowsing || agent?.agent.tools ? {
-        type: 'auto'
-      } : undefined,
-      tools: [
-        ...agent?.agent.isUsingBrowsing ? [
-          {
-            name: 'search',
-            description: 'Search for the information you need through a search engine.',
-            input_schema: {
-              type: 'object',
-              properties: {
-                query: {
-                  type: 'string',
-                  description: 'The search query you want to search for.'
-                }
-              },
-              required: ['query']
-            }
-          },
-          {
-            name: 'open_url',
-            description: 'Open a URL in a browser and return the result as text, image, or markdown.',
-            input_schema: {
-              type: 'object',
-              properties: {
-                url: {
-                  type: 'string',
-                  description: 'The valid URL you want to open.'
-                },
-                resultType: {
-                  type: 'string',
-                  description: 'The type of the search result you want to get. Possible value: `text`, `image`, or `markdown`.',
-                  enum: ['text', 'image', 'markdown']
-                }
-              },
-              required: ['url', 'resultType']
-            }
-          },
-        ] : [],
-        ...(agent?.agent.tools as { name: string, description: string, input_schema: string }[] || []).map(tool => ({
-          name: tool.name,
-          description: tool.description,
-          input_schema: JSON.parse(jsonrepair(tool.input_schema))
-        })),
-      ]
-    }).json()
-
-    if (!resp.content?.length) {
-      return NextResponse.json(resp, {
+  if (body.messages.at(-1)?.role === 'assistant') {
+    const botContents = body.messages.at(-1)?.content as ClaudeContent[]
+    if (!botContents?.length) {
+      return NextResponse.json({
+        error: 'Invalid content message'
+      }, {
         status: 500
       })
     }
 
-    body.messages.push({
-      role: 'assistant',
-      content: resp.content
-    })
-
-    const contents: ClaudeContent[] = []
-
-    for (const content of resp.content) {
+    for (const content of botContents) {
       if (content.type === 'tool_use' && agent) {
         console.log(`> running: ${content.name}`)
 
@@ -243,13 +177,82 @@ ${agent.agent.system}` : ''}` : undefined,
       }
     }
 
-    if (contents.length) {
-      body.messages.push({
-        role: 'user',
-        content: contents
+    if (!contents.length) {
+      return NextResponse.json({
+        error: 'No tool found'
+      }, {
+        status: 500
       })
     }
+
+    body.messages.push({
+      role: 'user',
+      content: contents
+    })
   }
+
+  const resp = await new Claude(apiKey ? { apiKey } : undefined).completion({
+    model: 'claude-3-5-sonnet-20240620',
+    messages: body.messages,
+    system: agent ? `You are an autonomous agent that can perform tasks based on the use case.
+
+Agent name: ${agent.agent.name}
+
+Agent description: ${agent.agent.description}${agent.agent.system ? `
+
+Follow the additional instructions:
+${agent.agent.system}` : ''}` : undefined,
+    tool_choice: agent?.agent.isUsingBrowsing || agent?.agent.tools ? {
+      type: 'auto'
+    } : undefined,
+    tools: [
+      ...agent?.agent.isUsingBrowsing ? [
+        {
+          name: 'search',
+          description: 'Search for the information you need through a search engine.',
+          input_schema: {
+            type: 'object',
+            properties: {
+              query: {
+                type: 'string',
+                description: 'The search query you want to search for.'
+              }
+            },
+            required: ['query']
+          }
+        },
+        {
+          name: 'open_url',
+          description: 'Open a URL in a browser and return the result as text, image, or markdown.',
+          input_schema: {
+            type: 'object',
+            properties: {
+              url: {
+                type: 'string',
+                description: 'The valid URL you want to open.'
+              },
+              resultType: {
+                type: 'string',
+                description: 'The type of the search result you want to get. Possible value: `text`, `image`, or `markdown`.',
+                enum: ['text', 'image', 'markdown']
+              }
+            },
+            required: ['url', 'resultType']
+          }
+        },
+      ] : [],
+      ...(agent?.agent.tools as { name: string, description: string, input_schema: string }[] || []).map(tool => ({
+        name: tool.name,
+        description: tool.description,
+        input_schema: JSON.parse(jsonrepair(tool.input_schema))
+      })),
+    ]
+  }).stream(contents.length ? {
+    message: {
+      role: 'user',
+      content: contents
+    }
+  } : undefined)
 
   if (apiKey === undefined) {
     await prisma.user.update({
@@ -264,7 +267,9 @@ ${agent.agent.system}` : ''}` : undefined,
     })
   }
 
-  return NextResponse.json({
-    messages: body.messages
-   })
+  return new Response(resp, {
+    headers: {
+      'Content-Type': 'text/plain'
+    }
+  })
 })
