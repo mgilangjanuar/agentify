@@ -16,6 +16,9 @@ export const GET = authorization(async (req) => {
           userId: req.user.id
         }
       }
+    },
+    orderBy: {
+      name: 'asc'
     }
   })
 
