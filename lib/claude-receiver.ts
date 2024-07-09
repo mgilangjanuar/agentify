@@ -1,4 +1,5 @@
 import { ClaudeStreamResponse } from '@/lib/claude'
+import { jsonrepair } from 'jsonrepair'
 
 export class ClaudeReceiver {
   static async consumeAsText(resp: Response, onData: (data: string) => void, fromBeginning: boolean = false) {
@@ -48,7 +49,7 @@ export class ClaudeReceiver {
         if (line.startsWith('data: ')) {
           const text = line.replace(/^data\:\ /, '')
           try {
-            const json: T = JSON.parse(text)
+            const json: T = JSON.parse(jsonrepair(text))
             result.push(json)
             onData(fromBeginning ? result : json)
           } catch (error) {
