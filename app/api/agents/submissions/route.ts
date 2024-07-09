@@ -15,6 +15,9 @@ export const GET = authorization(async (req) => {
     where: {
       isPublic: true
     },
+    orderBy: {
+      name: 'asc'
+    },
     include: {
       user: {
         select: {
