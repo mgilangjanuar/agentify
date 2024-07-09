@@ -28,7 +28,8 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: node_modules
-      - name: Publish Deps
+          path: ./
+      - name: publish deps
         uses: appleboy/scp-action@v0.1.4
         with:
           source: ./node_modules/*
