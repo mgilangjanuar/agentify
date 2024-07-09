@@ -334,7 +334,7 @@ export default function ChatAgent() {
                           const message = messages.find(m => m.role === 'user' && Array.isArray(m.content) && m.content.find(c => c.tool_use_id === content.id))
                           const text = (
                             (message?.content as ClaudeContent[])
-                            .find(c => Array.isArray(c.content))
+                            .find(c => Array.isArray(c.content) && c.tool_use_id === content.id)
                             ?.content as ClaudeContent[]
                           )?.find(c => c.text)?.text
                           if (!text) return '[done]'
