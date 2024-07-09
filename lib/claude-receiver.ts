@@ -16,7 +16,7 @@ export class ClaudeReceiver {
       const decoded = decoder.decode(value)
       if (!decoded) break
 
-      for (const line of decoded.split('\n\n')) {
+      for (const line of decoded.split('\r\n\r\n')) {
         if (line.startsWith('text: ')) {
           const text = line.replace(/^text\:\ /, '')
           result += text
@@ -44,7 +44,7 @@ export class ClaudeReceiver {
       const decoded = decoder.decode(value)
       if (!decoded) break
 
-      for (const line of decoded.split('\n\n')) {
+      for (const line of decoded.split('\r\n\r\n')) {
         if (line.startsWith('data: ')) {
           const text = line.replace(/^data\:\ /, '')
           const json: T = JSON.parse(text)

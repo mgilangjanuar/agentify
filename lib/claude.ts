@@ -192,10 +192,10 @@ export class Claude {
                     .trim()
                 )
               )
-              controller.enqueue(`\n\ndata: ${JSON.stringify(json)}`)
+              controller.enqueue(`\r\n\r\ndata: ${JSON.stringify(json)}`)
               const text = json.delta?.text || json.delta?.partial_json
               if (text) {
-                controller.enqueue(`\n\ntext: ${text}`)
+                controller.enqueue(`\r\n\r\ntext: ${text}`)
               }
 
               if (json.message?.usage) {
@@ -211,7 +211,7 @@ export class Claude {
             // ignore
           }
         }
-        controller.enqueue(`\n\n__meta: ${JSON.stringify(meta)}`)
+        controller.enqueue(`\r\n\r\n__meta: ${JSON.stringify(meta)}`)
         controller.close()
       },
     })
@@ -269,10 +269,10 @@ export class Claude {
               line.replace(/^data\: /gm, '').trim())
             const json: ClaudeStreamResponse = JSON.parse(parsedLine)
 
-            controller.enqueue(encoder.encode(`\n\ndata: ${JSON.stringify(json)}`))
+            controller.enqueue(encoder.encode(`\r\n\r\ndata: ${JSON.stringify(json)}`))
             const text = json.delta?.text || json.delta?.partial_json
             if (text) {
-              controller.enqueue(encoder.encode(`\n\ntext: ${text}`))
+              controller.enqueue(encoder.encode(`\r\n\r\ntext: ${text}`))
             }
 
             if (json.message?.usage) {
@@ -286,7 +286,7 @@ export class Claude {
 
             if (json.type === 'message_stop') {
               controller.enqueue(
-                encoder.encode(`\n\n__meta: ${JSON.stringify(meta)}`)
+                encoder.encode(`\r\n\r\n__meta: ${JSON.stringify(meta)}`)
               )
               controller.terminate()
               return
