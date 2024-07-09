@@ -45,7 +45,7 @@ export default function Home() {
             <LucideVideo className="w-5 h-5" />
           </DialogTrigger>
           <DialogContent className="max-w-screen-lg">
-            <DialogHeader>
+            <DialogHeader className="!text-left">
               <DialogTitle>
                 Demo
               </DialogTitle>

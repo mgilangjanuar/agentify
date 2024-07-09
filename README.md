@@ -1,5 +1,7 @@
 # Agentify
 
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fagentify.appledore.dev%2Fapi%2Fping&query=aman&label=server%20status&color=%2325c2a0)
+
 An agent studio platform that utilizes Claude models to generate a specific agent for a particular task.
 
 ![ss](/public/img1.png)
