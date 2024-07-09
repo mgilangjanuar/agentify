@@ -20,7 +20,7 @@ export default function Store() {
   const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[], user: { name: string } })[]>()
 
   const fetchAgents = useCallback(async () => {
-    const resp = await hit(tab === 'installed' ? '/api/agents/public?installed=true' : '/api/agents/public')
+    const resp = await hit(tab === 'installed' ? '/api/agents/store?installed=true' : '/api/agents/store')
     const json = await resp.json()
     setAgents(json)
   }, [tab])
