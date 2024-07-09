@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import { LucideArrowRight, LucideGithub } from 'lucide-react'
+import { LucideArrowRight, LucideGithub, LucideVideo } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 export default function Home() {
+  const [tab, setTab] = useState<'setup' | 'github'>('setup')
+
   return <div className="py-6">
     <div className="relative flex h-[65svh] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background container mx-auto max-w-3xl text-center">
       <div className="space-y-3 z-20">
@@ -36,6 +39,27 @@ export default function Home() {
             </Link>
           </Button>
         </div>
+        <Dialog>
+          <DialogTrigger className="underline underline-offset-4 lg:text-lg flex gap-2 items-center justify-center w-full">
+            Watch Demo
+            <LucideVideo className="w-5 h-5" />
+          </DialogTrigger>
+          <DialogContent className="max-w-screen-lg">
+            <DialogHeader>
+              <DialogTitle>
+                Demo
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="flex gap-2 flex-nowrap">
+                <Badge variant={tab === 'setup' ? 'default' : 'outline'} onClick={() => setTab('setup')} className="hover:cursor-pointer">Setup</Badge>
+                <Badge variant={tab === 'github' ? 'default' : 'outline'} onClick={() => setTab('github')} className="hover:cursor-pointer">Advance Case</Badge>
+              </div>
+              {tab === 'setup' ? <iframe className="w-full !h-auto !aspect-video" width="560" height="315" src="https://www.youtube-nocookie.com/embed/a3-HmMfRPBE?si=hn8CAYCFXCaYACQv&amp;controls=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe> : <></>}
+              {tab === 'github' ? <iframe className="w-full !h-auto !aspect-video" width="560" height="315" src="https://www.youtube-nocookie.com/embed/v9AZzp9M9H8?si=vJ7N8y62RT5TvyTl&amp;controls=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe> : <></>}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       <DotPattern
         className={cn(
