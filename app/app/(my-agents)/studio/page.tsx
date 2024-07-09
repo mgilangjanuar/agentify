@@ -327,6 +327,12 @@ export default function Studio() {
                         </div>
                       ))}
                     </div> : <></>}
+                    <Separator />
+                    <div className="flex justify-center">
+                      <Button className="flex items-center gap-2">
+                        Edit in Advanced Mode <Badge variant="secondary">soon</Badge>
+                      </Button>
+                    </div>
                   </div> : <></>}
                 </div>
               </ScrollArea>
