@@ -79,6 +79,12 @@ bun run build && bun run start
 | `BROWSER_SECRET` | The Agentify Browser secret | ✅ |
 | `ANTHROPIC_API_KEY` | The Anthropic API key | ✅ |
 
+## Contributors
+
+<a href="https://github.com/mgilangjanuar/agentify/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=mgilangjanuar/agentify" />
+</a>
+
 ## License
 
 [MIT](/LICENSE.md)
