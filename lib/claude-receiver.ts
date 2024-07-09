@@ -47,9 +47,13 @@ export class ClaudeReceiver {
       for (const line of decoded.split('\r\n\r\n')) {
         if (line.startsWith('data: ')) {
           const text = line.replace(/^data\:\ /, '')
-          const json: T = JSON.parse(text)
-          result.push(json)
-          onData(fromBeginning ? result : json)
+          try {
+            const json: T = JSON.parse(text)
+            result.push(json)
+            onData(fromBeginning ? result : json)
+          } catch (error) {
+            // ignore
+          }
         }
       }
     }
