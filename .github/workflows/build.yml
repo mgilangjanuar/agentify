@@ -35,7 +35,7 @@ jobs:
         with:
           source: ./node_modules/*
           host: ${{ secrets.SSH_HOST }}
-          target: ${{ secrets.SSH_PATH }}/node_modules
+          target: ${{ secrets.SSH_PATH }}
           username: ubuntu
           rm: true
           key: ${{ secrets.SSH_PRIVATE_KEY }}
