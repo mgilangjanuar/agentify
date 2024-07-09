@@ -28,4 +28,12 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: cd ${{ secrets.SSH_PATH }} && git reset --hard && git pull origin main && /home/ubuntu/.bun/bin/bun install && /home/ubuntu/.bun/bin/bun run prisma migrate deploy && /home/ubuntu/.bun/bin/bun run prisma generate && /home/ubuntu/.bun/bin/bun run build && pm2 restart agentify
+          script: |
+            cd ${{ secrets.SSH_PATH }} && \
+            git reset --hard && \
+            git pull origin main && \
+            /home/ubuntu/.bun/bin/bun install && \
+            /home/ubuntu/.bun/bin/bun run prisma migrate deploy && \
+            /home/ubuntu/.bun/bin/bun run prisma generate && \
+            /home/ubuntu/.bun/bin/bun run build && \
+            /home/ubuntu/.bun/bin/pm2 restart agentify
