@@ -61,7 +61,7 @@ export default function AppLayout({
               </Link>
             </nav>
           </div>
-          <div className="mt-auto py-2 px-2.5 lg:px-4 space-y-2">
+          <div className="mt-auto py-4 px-2.5 lg:px-4 space-y-3">
             <Alert>
               <div className="flex gap-2 items-center mb-2">
                 <LucideTriangleAlert className="h-4 w-4" />
