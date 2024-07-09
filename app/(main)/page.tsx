@@ -24,7 +24,7 @@ export default function Home() {
           Build &amp; Install LLM Agents with <span className="underline underline-offset-8">No Code</span>
         </h1>
         <p className="leading-7 !mt-6 text-muted-foreground lg:text-xl">
-          Create, publish, and install AI agents. Powered by <strong>Claude 3.5 Sonnet</strong> model.
+          Create, publish, and install AI agents. Powered by <strong>Claude 3.5 Sonnet.</strong>
         </p>
         <div className="!mt-8 flex gap-1 items-center justify-center">
           <Button asChild size="lg" variant="outline">
