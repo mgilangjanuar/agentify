@@ -90,7 +90,7 @@ export default function Studio() {
 
   const save = async (data: z.infer<typeof agentSchema>) => {
     setLoading(true)
-    await hit('/api/agents', {
+    const resp = await hit('/api/agents', {
       method: 'POST',
       body: JSON.stringify({
         ...data,
@@ -102,6 +102,16 @@ export default function Studio() {
         },
       }),
     })
+    const json = await resp.json()
+    if (resp.ok) {
+      toast('Success', {
+        description: 'Agent has been updated.',
+      })
+    } else {
+      toast('Error', {
+        description: json.error || 'Something went wrong.'
+      })
+    }
     setLoading(false)
   }
 

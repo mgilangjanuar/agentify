@@ -28,6 +28,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const agentSchema = z.object({
@@ -55,10 +56,20 @@ export default function StudioAgent() {
 
   const save = async (data: z.infer<typeof agentSchema>) => {
     setLoading(true)
-    await hit(`/api/agents/${id}`, {
+    const resp = await hit(`/api/agents/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+    const json = await resp.json()
+    if (resp.ok) {
+      toast('Success', {
+        description: 'Agent has been updated.',
+      })
+    } else {
+      toast('Error', {
+        description: json.error || 'Something went wrong.'
+      })
+    }
     setLoading(false)
   }
 

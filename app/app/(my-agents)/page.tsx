@@ -112,7 +112,11 @@ export default function MyAgents() {
           <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
             {(agents || [])?.map(agent => (
               <Card key={agent.id}>
-                <CardHeader>
+                <CardHeader className={agent.installedAgents?.length ? 'hover:cursor-pointer' : ''} onClick={() => {
+                  if (agent.installedAgents?.length) {
+                    r.push(`/app/chat/${agent.installedAgents![0].id}`)
+                  }
+                }}>
                   <div className="flex gap-4 flex-nowrap">
                     {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
                       <LucideBot className="h-6 w-6" />
