@@ -1,12 +1,13 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
-import { CircleUser, LucideBot, LucideMoonStar, LucideShoppingBag, LucideSun, Menu } from 'lucide-react'
+import { CircleUser, LucideBot, LucideGithub, LucideMoonStar, LucideShoppingBag, LucideSun, LucideTriangleAlert, Menu } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -60,13 +61,36 @@ export default function AppLayout({
               </Link>
             </nav>
           </div>
-          <div className="mt-auto py-2 px-2.5 lg:px-4">
-            <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
-              <LucideMoonStar className="size-4" />
-            </Button>
-            <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
-              <LucideSun className="size-4" />
-            </Button>
+          <div className="mt-auto py-2 px-2.5 lg:px-4 space-y-2">
+            <Alert>
+              <div className="flex gap-2 items-center mb-2">
+                <LucideTriangleAlert className="h-4 w-4" />
+                <AlertTitle className="!mb-0">
+                  Warning!
+                </AlertTitle>
+              </div>
+              <AlertDescription>
+                Please expect the service to be unstable and data lost as we are in the Alpha phase.
+              </AlertDescription>
+            </Alert>
+            <div className="flex gap-1 items-center justify-between">
+              <div className="flex gap-1 items-center">
+                <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
+                  <LucideMoonStar className="size-4" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
+                  <LucideSun className="size-4" />
+                </Button>
+                <Button asChild variant="ghost" size="icon">
+                  <a href="https://github.com/mgilangjanuar/agentify" target="_blank" rel="noopener noreferrer">
+                    <LucideGithub className="size-4" />
+                  </a>
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                v0-alpha
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -110,13 +134,36 @@ export default function AppLayout({
                   Store
                 </Link>
               </nav>
-              <div className="mt-auto px-0.5">
-                <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
-                  <LucideMoonStar className="size-4" />
-                </Button>
-                <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
-                  <LucideSun className="size-4" />
-                </Button>
+              <div className="mt-auto px-0.5 space-y-4">
+                <Alert>
+                  <div className="flex gap-2 items-center mb-2">
+                    <LucideTriangleAlert className="h-4 w-4" />
+                    <AlertTitle className="!mb-0">
+                      Warning!
+                    </AlertTitle>
+                  </div>
+                  <AlertDescription>
+                    Please expect the service to be unstable and data lost as we are in the Alpha phase.
+                  </AlertDescription>
+                </Alert>
+                <div className="flex gap-1 items-center justify-between">
+                  <div className="flex gap-1 items-center">
+                    <Button size="icon" variant="ghost" onClick={() => setTheme('dark')} className="dark:hidden flex">
+                      <LucideMoonStar className="size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => setTheme('light')} className="hidden dark:flex">
+                      <LucideSun className="size-4" />
+                    </Button>
+                    <Button asChild variant="ghost" size="icon">
+                      <a href="https://github.com/mgilangjanuar/agentify" target="_blank" rel="noopener noreferrer">
+                        <LucideGithub className="size-4" />
+                      </a>
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    v0-alpha
+                  </p>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

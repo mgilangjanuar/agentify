@@ -54,16 +54,6 @@ export default function MyAgents() {
   }, [fetchInstalledAgents])
 
   return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">
-    <Alert>
-      <LucideTriangleAlert className="h-4 w-4" />
-      <AlertTitle>
-        Warning!
-      </AlertTitle>
-      <AlertDescription>
-        Please expect the service to be unstable and data lost as we are in the Alpha phase. We recommend <a href="https://github.com/mgilangjanuar/agentify" className="underline underline-offset-4" target="_blank" rel="noopener noreferrer">self-hosting</a> the service.
-      </AlertDescription>
-    </Alert>
-
     <div className="flex justify-between gap-2 flex-wrap items-center">
       <h1 className="text-xl font-semibold md:text-2xl">
         My Agents
