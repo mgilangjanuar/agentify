@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { hit } from '@/lib/hit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CaretSortIcon, ReloadIcon } from '@radix-ui/react-icons'
@@ -123,7 +124,7 @@ export default function StudioAgent() {
             <CardContent>
               <ScrollArea className="w-full truncate">
                 <ScrollBar orientation="vertical" />
-                <div className="space-y-4 md:!max-h-[calc(100svh-290px)] px-2.5">
+                <div className="space-y-4 lg:!max-h-[calc(100svh-290px)] md:!max-h-[calc(100svh-324px)] px-2.5">
                   <FormField
                     control={agentForm.control}
                     name="name"
@@ -244,7 +245,7 @@ export default function StudioAgent() {
                           <div>
                             <LucideChevronRight className="w-3 h-3 mt-0.5" />
                           </div>
-                          <div className="space-y-1 grid grid-cols-1">
+                          <div className="space-y-1 grid grid-cols-1 w-full">
                             <FormLabel className="font-mono">{tool.name}</FormLabel>
                             <FormDescription className="whitespace-pre-line">{tool.description}</FormDescription>
                             <Collapsible>
@@ -277,17 +278,21 @@ export default function StudioAgent() {
                         </div>
                       ))}
                     </div> : <></>}
-                    <Separator />
-                    <div className="flex justify-center">
-                      <Button type="button" className="flex items-center gap-2">
-                        Edit in Advanced Mode <Badge variant="secondary">soon</Badge>
-                      </Button>
-                    </div>
                   </div> : <></>}
                 </div>
               </ScrollArea>
             </CardContent>
-            <CardFooter className="flex justify-end w-full">
+            <CardFooter className="flex justify-between w-full items-center flex-wrap gap-3 lg:flex-row flex-col">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button type="button" variant="outline" className="flex items-center gap-2">
+                    Edit in Advanced Mode ✨
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Soon
+                </TooltipContent>
+              </Tooltip>
               <Button type="submit" disabled={loading}>
                 {loading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <LucideSave className="w-4 h-4 mr-2" />}
                 Save

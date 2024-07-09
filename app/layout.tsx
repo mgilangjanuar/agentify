@@ -1,4 +1,5 @@
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { UserProvider } from '@/components/use-user'
 import { cn } from '@/lib/utils'
 import { GeistSans } from 'geist/font/sans'
@@ -27,9 +28,11 @@ export default function RootLayout({
           defaultTheme="light"
           disableTransitionOnChange
         >
-          <UserProvider>
-            {children}
-          </UserProvider>
+          <TooltipProvider delayDuration={0}>
+            <UserProvider>
+              {children}
+            </UserProvider>
+          </TooltipProvider>
         </ThemeProvider>
         <Toaster />
       </body>

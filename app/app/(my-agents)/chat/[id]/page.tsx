@@ -45,7 +45,7 @@ export default function ChatAgent() {
   const [agent, setAgent] = useState<InstalledAgent & { agent: Agent }>()
   const [select, setSelect] = useState<string | null>()
   const [histories, setHistories] = useState<History[]>([])
-  const [messages, setMesages] = useState<ClaudeCompletionPayload['messages']>([])
+  const [messages, setMessages] = useState<ClaudeCompletionPayload['messages']>([])
   const ref = useRef<HTMLTextAreaElement>(null)
   const abort = useRef<AbortController>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -86,7 +86,7 @@ export default function ChatAgent() {
         content: content?.trim() || ''
       }
     ]
-    setMesages(payload)
+    setMessages(payload)
 
     setLoading(true)
     const resp = await hit('/api/engines/chat-stream', {
@@ -151,7 +151,7 @@ export default function ChatAgent() {
             }
           ]
         }]
-        setMesages(json)
+        setMessages(json)
       }
     })
 
@@ -218,12 +218,12 @@ export default function ChatAgent() {
       </BreadcrumbList>
     </Breadcrumb>
 
-    <div className="grid gap-6 xl:grid-cols-4 lg:grid-cols-3">
+    <div className="grid gap-4 xl:grid-cols-4 lg:grid-cols-3">
 
       <div className={cn('flex gap-1 flex-col relative', select === undefined ? 'flex' : select !== undefined ? 'hidden lg:flex' : '')}>
         <Button variant="outline" onClick={() => {
           setSelect(null)
-          setMesages([])
+          setMessages([])
         }}>
           <LucidePlus className="h-4 w-4 mr-2" />
           New Chat
@@ -239,7 +239,7 @@ export default function ChatAgent() {
                 )}
                 onClick={() => {
                   setSelect(history.id)
-                  setMesages(history.messages as ClaudeCompletionPayload['messages'])
+                  setMessages(history.messages as ClaudeCompletionPayload['messages'])
                 }}
               >
                 <div className="flex items-center gap-2 w-full">
@@ -265,7 +265,7 @@ export default function ChatAgent() {
           <div className="flex items-center gap-3 truncate">
             <Button variant="ghost" size="icon" className="flex lg:hidden" onClick={() => {
               setSelect(undefined)
-              setMesages([])
+              setMessages([])
             }}>
               <LucideArrowLeft className="h-4 w-4" />
             </Button>
@@ -276,7 +276,7 @@ export default function ChatAgent() {
           {select ? <Button variant="ghost" className="!my-0" size="icon" onClick={async () => {
             await hit(`/api/histories/${select}`, { method: 'DELETE' })
             setSelect(undefined)
-            setMesages([])
+            setMessages([])
             fetchHistories()
           }}>
             <LucideTrash2 className="h-4 w-4 text-red-500" />
