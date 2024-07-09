@@ -1,7 +1,7 @@
 # Agentify
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fagentify.appledore.dev%2Fapi%2Fping&query=status&label=server%20status)
-[![deploy](https://github.com/mgilangjanuar/agentify/actions/workflows/deploy.yml/badge.svg)](https://github.com/mgilangjanuar/agentify/actions/workflows/deploy.yml)
+[![deploy](https://github.com/mgilangjanuar/agentify/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/mgilangjanuar/agentify/actions/workflows/deploy.yml)
 
 An agent studio platform that utilizes Claude models to generate a specific agent for a particular task.
 
