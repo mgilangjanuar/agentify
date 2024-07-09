@@ -12,6 +12,14 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: SECRET=${{ secrets.SECRET }} bun run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: node_modules
+          path: node_modules
+      - uses: actions/upload-artifact@master
+        with:
+          name: build
+          path: .next
   deploy:
     name: deploy
     runs-on: ubuntu-latest
