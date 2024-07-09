@@ -21,7 +21,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
+import { Claude, ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
+import { ClaudeReceiver } from '@/lib/claude-receiver'
 import { hit } from '@/lib/hit'
 import { cn } from '@/lib/utils'
 import { History } from '@prisma/client'
@@ -70,55 +71,76 @@ export default function Chat() {
     setMesages(payload)
 
     setLoading(true)
-    const resp = await hit('/api/engines/chat', {
+    const resp = await hit('/api/engines/chat-exp', {
       method: 'POST',
       body: JSON.stringify({ messages: payload }),
     })
+    setMesages([...payload, {
+      role: 'assistant',
+      content: [
+        {
+          type: 'text',
+          text: ''
+        }
+      ]
+    }])
     setLoading(false)
+    await ClaudeReceiver.consumeAsText(resp, async (text) => {
+      if (text.startsWith('__meta: ')) return
+      setMesages([...payload, {
+        role: 'assistant',
+        content: [
+          {
+            type: 'text',
+            text
+          }
+        ]
+      }])
+    }, true)
 
-    const json = await resp.json()
-    if (!resp.ok) {
-      toast('Error', {
-        description: json.error?.message || json.error || 'Something went wrong',
-      })
-      return
-    }
+    // const json = await resp.json()
+    // if (!resp.ok) {
+    //   toast('Error', {
+    //     description: json.error?.message || json.error || 'Something went wrong',
+    //   })
+    //   return
+    // }
 
-    setMesages(json.messages)
-    ref.current!.value = ''
+    // setMesages(json.messages)
+    // ref.current!.value = ''
 
-    const results = json.messages as ClaudeCompletionPayload['messages']
-    if (select) {
-      await hit(`/api/histories/${select}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ messages: results }),
-      })
-    } else {
-      const resp = await hit('/api/engines/chat', {
-        method: 'POST',
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'user',
-              content: `Create a title for this chat in max 5 words without any quotes or apostrophes.\n\n<messages>\n${results.map(({ content, role }) => `<message role="${role}">${typeof content === 'string' ? content : content.map(c => c.text).join('\n')}</message>`).join('\n')}\n</messages>`
-            }
-          ]
-        }),
-      })
+    // const results = json.messages as ClaudeCompletionPayload['messages']
+    // if (select) {
+    //   await hit(`/api/histories/${select}`, {
+    //     method: 'PATCH',
+    //     body: JSON.stringify({ messages: results }),
+    //   })
+    // } else {
+    //   const resp = await hit('/api/engines/chat', {
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //       messages: [
+    //         {
+    //           role: 'user',
+    //           content: `Create a title for this chat in max 5 words without any quotes or apostrophes.\n\n<messages>\n${results.map(({ content, role }) => `<message role="${role}">${typeof content === 'string' ? content : content.map(c => c.text).join('\n')}</message>`).join('\n')}\n</messages>`
+    //         }
+    //       ]
+    //     }),
+    //   })
 
-      const titleJson = await resp.json() as { messages: ClaudeCompletionPayload['messages'] }
-      const history = await hit('/api/histories', {
-        method: 'POST',
-        body: JSON.stringify({
-          title: (titleJson.messages.at(-1)?.content as ClaudeContent[])?.find(c => c.text)?.text || 'Untitled',
-          messages: results,
-        }),
-      })
-      const historyJson = await history.json() as History
-      setSelect(historyJson.id)
-    }
+    //   const titleJson = await resp.json() as { messages: ClaudeCompletionPayload['messages'] }
+    //   const history = await hit('/api/histories', {
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //       title: (titleJson.messages.at(-1)?.content as ClaudeContent[])?.find(c => c.text)?.text || 'Untitled',
+    //       messages: results,
+    //     }),
+    //   })
+    //   const historyJson = await history.json() as History
+    //   setSelect(historyJson.id)
+    // }
 
-    fetchHistories()
+    // fetchHistories()
   }
 
   return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">
