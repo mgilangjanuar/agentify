@@ -15,5 +15,14 @@ jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - run: echo "Deploying..."
+      - name: Publish Deps
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          source: ./node_modules/*
+          host: ${{ secrets.SSH_HOST }}
+          target: ${{ secrets.SSH_PATH }}/node_modules
+          username: ubuntu
+          rm: true
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
