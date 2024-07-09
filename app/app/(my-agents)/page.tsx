@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,7 +13,7 @@ import { Separator } from '@/components/ui/separator'
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
-import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
+import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2, LucideTriangleAlert, RocketIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -53,6 +54,16 @@ export default function MyAgents() {
   }, [fetchInstalledAgents])
 
   return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">
+    <Alert>
+      <LucideTriangleAlert className="h-4 w-4" />
+      <AlertTitle>
+        Warning!
+      </AlertTitle>
+      <AlertDescription>
+        Please expect the service to be unstable and data lost as we are in the Alpha phase. We recommend <a href="https://github.com/mgilangjanuar/agentify" className="underline underline-offset-4" target="_blank" rel="noopener noreferrer">self-hosting</a> the service.
+      </AlertDescription>
+    </Alert>
+
     <div className="flex justify-between gap-2 flex-wrap items-center">
       <h1 className="text-xl font-semibold md:text-2xl">
         My Agents
