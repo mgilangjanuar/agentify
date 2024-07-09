@@ -43,7 +43,7 @@ export default function Home() {
         )}
       />
     </div>
-    <div className="container mx-auto max-w-screen-xl px-16">
+    <div className="container mx-auto max-w-screen-xl px-16 pt-20">
       <Carousel>
         <CarouselContent>
           <CarouselItem>
