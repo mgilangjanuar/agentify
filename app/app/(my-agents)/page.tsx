@@ -92,7 +92,7 @@ export default function MyAgents() {
           <div className="grid gap-4 xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 grid-cols-2">
             {(installedAgents || [])?.map(({ agent, id }) => (
               <div key={id} className="p-4 flex flex-col items-center gap-2 hover:cursor-pointer" onClick={() => r.push(`/app/chat/${id}`)}>
-                {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-20" alt={agent.name} /> : <div className="!w-20 !h-20 flex items-center justify-center rounded-lg bg-gray-200">
+                {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-20" alt={agent.name} /> : <div className="!w-20 !h-20 flex items-center justify-center rounded-lg bg-muted">
                   <LucideBot className="h-12 w-12" />
                 </div>}
                 <p className="w-full text-center text-sm font-medium">
@@ -118,7 +118,7 @@ export default function MyAgents() {
                   }
                 }}>
                   <div className="flex gap-4 flex-nowrap">
-                    {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
+                    {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
                       <LucideBot className="h-6 w-6" />
                     </div>}
                     <div className="flex flex-col space-y-1.5 flex-1">

@@ -110,7 +110,7 @@ export default function AppLayout({
             <SheetContent side="left" className="flex flex-col">
               <SheetHeader>
                 <SheetTitle asChild className="!text-left text-lg px-2">
-                  <Link className="flex items-center gap-3" href="/app" onClick={() => setOpen(false)}>
+                  <Link className="flex items-center gap-3" href="/" onClick={() => setOpen(false)}>
                     <Image src="/logo.png" alt="Agentify" width={728} height={728} className="w-6 h-6" />
                     <span className="font-bold">Agentify</span>
                   </Link>

@@ -458,16 +458,16 @@ export default function Studio() {
         {messages?.length ? <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>
-              Debug Log
+              Processing...
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ScrollArea className="w-full truncate">
               <ScrollBar orientation="vertical" />
-              <div className="space-y-4 lg:!max-h-[calc(100svh-290px)] md:!max-h-[calc(100svh-324px)] px-2.5">
-                <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
-                  {JSON.stringify(messages, null, 2)}
-                </pre>
+              <div className="space-y-4 md:!max-h-[calc(100svh-290px)] px-2.5">
+                {messages?.map((message, index) => (
+                  <div key={index}></div>
+                ))}
               </div>
             </ScrollArea>
           </CardContent>

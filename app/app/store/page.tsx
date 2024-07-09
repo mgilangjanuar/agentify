@@ -62,7 +62,7 @@ export default function Store() {
             }
           }}>
             <div className="flex gap-4 flex-nowrap">
-              {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
+              {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
                 <LucideBot className="h-6 w-6" />
               </div>}
               <div className="flex flex-col space-y-1.5 flex-1">
