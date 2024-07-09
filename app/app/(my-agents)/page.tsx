@@ -196,7 +196,8 @@ export default function MyAgents() {
                             method: 'POST',
                             body: JSON.stringify({ agentId: agent.id, configs: data }),
                           })
-                          await fetchInstalledAgents()
+                          fetchInstalledAgents()
+                          fetchAgents()
                         }}>
                           {(agent.configs as any[])?.map(config => (
                             <div key={config.id} className="space-y-2">
