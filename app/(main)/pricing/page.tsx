@@ -8,7 +8,7 @@ import { Check } from 'lucide-react'
 
 const pricingPlans = [
   {
-    name: 'Forever Free',
+    name: 'Free',
     description: 'Bring your own API key or self-hosted.',
     currency: '$',
     price: 0,
