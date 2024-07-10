@@ -18,6 +18,7 @@ Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
 - [x] Install agents from the Store
 - [x] Review submissions
 - [x] Stream mode
+- [ ] Isolated script execution
 - [ ] Advanced mode Studio
 - [ ] Pagination, lol
 

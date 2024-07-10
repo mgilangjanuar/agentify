@@ -38,7 +38,7 @@ export default function Home() {
           Introducing Agent Studio ✨
         </Badge>
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-6xl">
-          Build &amp; Install LLM Agents with <span className="underline underline-offset-8">No Code</span>
+          Build &amp; Install AI Applications with <span className="underline underline-offset-8">No Code</span>
         </h1>
         <p className="leading-7 !mt-6 text-muted-foreground lg:text-xl">
           Create, publish, and install AI agents. Powered by <strong>Claude 3.5 Sonnet.</strong>
