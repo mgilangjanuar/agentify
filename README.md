@@ -6,9 +6,17 @@
 
 An agent studio platform that utilizes Claude models to generate a specific agent for a particular task.
 
+Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
+
 ![ss](/public/img1.png)
 
-Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
+**Video Demo 1:**
+
+[![Video Demo 1](https://img.youtube.com/vi/S_RuJZQFyuY/0.jpg)](https://www.youtube.com/watch?v=S_RuJZQFyuY "Agentify - Weather Agent")
+
+**Video Demo 2:**
+
+[![Video Demo 2](https://img.youtube.com/vi/992ebMwTVZ8/0.jpg)](https://www.youtube.com/watch?v=992ebMwTVZ8 "Agentify - GitHub Agent")
 
 ## Features
 
