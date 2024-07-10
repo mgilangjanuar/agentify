@@ -52,7 +52,7 @@ export default function Submission() {
               <Card key={agent.id} className="hover:cursor-pointer">
                 <CardHeader>
                   <div className="flex gap-4 flex-nowrap">
-                    {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
+                    {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
                       <LucideBot className="h-6 w-6" />
                     </div>}
                     <div className="flex flex-col space-y-1.5 flex-1">
@@ -80,7 +80,7 @@ export default function Submission() {
               <ScrollArea>
                 <ScrollBar orientation="vertical" />
                 <div className="py-4 content-start grid grid-cols-1 gap-4 max-h-[calc(100svh-120px)] pr-6">
-                  {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-gray-200">
+                  {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
                     <LucideBot className="h-6 w-6" />
                   </div>}
                   <div className="space-y-1">
