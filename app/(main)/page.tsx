@@ -64,11 +64,11 @@ export default function Home() {
           <DialogContent className="max-w-screen-lg">
             <DialogHeader className="!text-left">
               <DialogTitle>
-                Demo
+                Demo Videos
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div className="flex gap-2 flex-nowrap">
+              <div className="flex gap-1 flex-nowrap">
                 <Badge variant={tab === 'setup' ? 'default' : 'outline'} onClick={() => setTab('setup')} className="hover:cursor-pointer">Setup</Badge>
                 <Badge variant={tab === 'github' ? 'default' : 'outline'} onClick={() => setTab('github')} className="hover:cursor-pointer">Advance Case</Badge>
               </div>
