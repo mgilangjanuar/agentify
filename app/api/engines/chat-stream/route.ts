@@ -82,8 +82,8 @@ export const POST = authorization(async (req: ReqWithUser) => {
         if (tool) {
           const input = content.input
           try {
-            // const output = await new AgentifyScript().run(tool.execute, [input, agent.configs])
-            const output = await eval(`(${tool.execute})`)(input, agent.configs)
+            const output = await new AgentifyScript().run(tool.execute, [input, agent.configs])
+            // const output = await eval(`(${tool.execute})`)(input, agent.configs)
             console.log(`> running \`${content.name}\` successfully...`)
             contents.push({
               type: 'tool_result',
