@@ -130,7 +130,13 @@ export default function Submission() {
                                 {tool.description}
                               </p>
                               <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted rounded-lg">
-                                {JSON.stringify(JSON.parse(tool.input_schema), null, 2)}
+                                {(() => {
+                                  try {
+                                    return JSON.stringify(JSON.parse(tool.input_schema), null, 2)
+                                  } catch (error) {
+                                    return tool.input_schema
+                                  }
+                                })()}
                               </pre>
                               <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted rounded-lg">
                                 {tool.execute}
