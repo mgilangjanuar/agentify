@@ -40,7 +40,7 @@ export default function Submission() {
       </h1>
     </div>
 
-    <ScrollArea className="md:!h-[calc(100svh-50px)]">
+    <ScrollArea className="md:!h-[calc(100svh-150px)]">
       <ScrollBar orientation="vertical" />
       <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
         {(agents || [])?.map(agent => (
