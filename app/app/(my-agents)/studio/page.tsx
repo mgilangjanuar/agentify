@@ -95,22 +95,6 @@ export default function Studio() {
       content: []
     }]
 
-    let finished = false
-    const generateTools = (result: any) => {
-      agentForm.reset({
-        name: result.agent_name,
-        description: result.description,
-        system: '',
-        logoUrl: '',
-        isUsingBrowsing: false,
-        isPublic: false,
-      })
-      setUseBlank(false)
-      setResultSchema(result)
-      setMessages([])
-      finished = true
-    }
-
     let text = ''
     await ClaudeReceiver.consumeAsData(resp, data => {
       const resp = data as ClaudeStreamResponse
@@ -157,11 +141,6 @@ export default function Studio() {
             ]
           }]
           setMessages(json)
-
-          if ((json.at(-1)?.content?.at(-1) as ClaudeContent).name === 'generate_tools') {
-            const result = (json.at(-1)?.content?.at(-1) as ClaudeContent)?.input as any
-            generateTools(result)
-          }
         } catch (error) {
           // ignore
         }
@@ -171,13 +150,22 @@ export default function Studio() {
     if ((json.at(-1)?.content?.at(-1) as ClaudeContent).name === 'generate_tools') {
       const result = (json.at(-1)?.content?.at(-1) as ClaudeContent)?.input as any
       console.log(result)
-      generateTools(result)
+      agentForm.reset({
+        name: result.agent_name,
+        description: result.description,
+        system: '',
+        logoUrl: '',
+        isUsingBrowsing: false,
+        isPublic: false,
+      })
+      setUseBlank(false)
+      setResultSchema(result)
+      setMessages([])
       setLoading(false)
+      return
     }
 
-    if (!finished) {
-      await generate(data, json)
-    }
+    await generate(data, json)
   }
 
   const save = async (data: z.infer<typeof agentSchema>) => {
@@ -475,7 +463,7 @@ export default function Studio() {
                     ], [] as ClaudeContent[]
                   ).map((content, i) => (
                     <AccordionItem key={`${content.id}:${i}`} value={`${content.id}:${i}`}>
-                      <AccordionTrigger>
+                      <AccordionTrigger className="!text-left">
                         <div className="flex flex-nowrap gap-2 items-start w-full">
                           <LucideBot className="w-4 h-4" />
                           {content.name && content.type === 'tool_use' ? (
