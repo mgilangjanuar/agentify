@@ -1,5 +1,6 @@
 'use client'
 
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
@@ -169,6 +170,7 @@ export default function Studio() {
 
     if ((json.at(-1)?.content?.at(-1) as ClaudeContent).name === 'generate_tools') {
       const result = (json.at(-1)?.content?.at(-1) as ClaudeContent)?.input as any
+      console.log(result)
       generateTools(result)
       setLoading(false)
     }
@@ -466,56 +468,53 @@ export default function Studio() {
             <ScrollArea className="w-full truncate">
               <ScrollBar orientation="vertical" />
               <div className="space-y-4 md:!max-h-[calc(100svh-290px)] px-2.5">
-                {messages?.map((message, i) => (
-                  <>
-                    {(message.content as ClaudeContent[] || []).map((content, ii) => (
-                      <div key={`${i}:${ii}`} className="flex flex-nowrap gap-2 items-start">
-                        <LucideBot className="w-4 h-4 mt-1.5" />
-                        {content.name && content.type === 'tool_use' ? <div className="flex-1">
-                          <Collapsible>
-                            <CollapsibleTrigger asChild>
-                              <p className="underline underline-offset-4 hover:cursor-pointer">
-                                run: {content.name}...
-                              </p>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                              <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
+                <Accordion type="multiple" className="w-full">
+                  {messages?.reduce(
+                    (res, message, i) => [
+                      ...res, ...(message.content as ClaudeContent[] || []).map(c => ({ ...c, id: c.id || i.toString() }))
+                    ], [] as ClaudeContent[]
+                  ).map((content, i) => (
+                    <AccordionItem key={`${content.id}:${i}`} value={`${content.id}:${i}`}>
+                      <AccordionTrigger>
+                        <div className="flex flex-nowrap gap-2 items-start w-full">
+                          <LucideBot className="w-4 h-4" />
+                          {content.name && content.type === 'tool_use' ? (
+                            <p>run: {content.name}...</p>
+                          ) : (
+                            <p>return: {content.type} ({(content.content as ClaudeContent[] || []).map(c => c.type).join(', ')})</p>
+                          )}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        {content.name && content.type === 'tool_use' ? (
+                          <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
+                            {(() => {
+                              try {
+                                return JSON.stringify(content.input, null, 2)
+                              } catch (error) {
+                                return content.text || '[done]'
+                              }
+                            })()}
+                          </pre>
+                        ) : (
+                          <div className="space-y-2">
+                            {(content.content as ClaudeContent[] || []).map((content, iii) => (
+                              <pre key={iii} className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
                                 {(() => {
                                   try {
-                                    return JSON.stringify(content.input, null, 2)
+                                    return JSON.stringify(JSON.parse(jsonrepair(content.text!)), null, 2)
                                   } catch (error) {
                                     return content.text || '[done]'
                                   }
                                 })()}
                               </pre>
-                            </CollapsibleContent>
-                          </Collapsible>
-                        </div> : <div className="flex-1 grid grid-cols-1">
-                          <Collapsible>
-                            <CollapsibleTrigger asChild>
-                              <p className="underline underline-offset-4 hover:cursor-pointer">
-                                return: {content.type} ({(content.content as ClaudeContent[] || []).map(c => c.type).join(', ')})
-                              </p>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                              {(content.content as ClaudeContent[] || []).map((content, iii) => (
-                                <pre key={iii} className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
-                                  {(() => {
-                                    try {
-                                      return JSON.stringify(JSON.parse(jsonrepair(content.text!)), null, 2)
-                                    } catch (error) {
-                                      return content.text || '[done]'
-                                    }
-                                  })()}
-                                </pre>
-                              ))}
-                            </CollapsibleContent>
-                          </Collapsible>
-                        </div>}
-                      </div>
-                    ))}
-                  </>
-                ))}
+                            ))}
+                          </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
             </ScrollArea>
           </CardContent>
