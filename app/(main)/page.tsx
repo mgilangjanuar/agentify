@@ -84,61 +84,64 @@ export default function Home() {
         )}
       />
     </div>
-    <div className="container mx-auto max-w-screen-xl px-16 pt-20">
-      <Carousel>
-        <CarouselContent>
-          <CarouselItem>
-            <Dialog>
-              <DialogTrigger>
-                <Image src="/img1.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-              </DialogTrigger>
-              <DialogContent className="max-w-screen-lg">
-                <div className="pt-6">
-                  <Image src="/img1.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-                </div>
-              </DialogContent>
-            </Dialog>
-          </CarouselItem>
-          <CarouselItem>
-            <Dialog>
-              <DialogTrigger>
-                <Image src="/img2.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-              </DialogTrigger>
-              <DialogContent className="max-w-screen-lg">
-                <div className="pt-6">
-                  <Image src="/img2.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-                </div>
-              </DialogContent>
-            </Dialog>
-          </CarouselItem>
-          <CarouselItem>
-            <Dialog>
-              <DialogTrigger>
-                <Image src="/img3.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-              </DialogTrigger>
-              <DialogContent className="max-w-screen-lg">
-                <div className="pt-6">
-                  <Image src="/img3.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-                </div>
-              </DialogContent>
-            </Dialog>
-          </CarouselItem>
-          <CarouselItem>
-            <Dialog>
-              <DialogTrigger>
-                <Image src="/img4.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-              </DialogTrigger>
-              <DialogContent className="max-w-screen-lg">
-                <div className="pt-6">
-                  <Image src="/img4.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
-                </div>
-              </DialogContent>
-            </Dialog>
-          </CarouselItem>
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+
+    <div className="py-20 mt-10 bg-muted/40">
+      <div className="container mx-auto max-w-screen-xl">
+        <Carousel className="relative">
+          <CarouselContent>
+            <CarouselItem>
+              <Dialog>
+                <DialogTrigger>
+                  <Image src="/img1.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg border shadow-md" alt="screenshot" />
+                </DialogTrigger>
+                <DialogContent className="max-w-screen-lg">
+                  <div className="pt-6">
+                    <Image src="/img1.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CarouselItem>
+            <CarouselItem>
+              <Dialog>
+                <DialogTrigger>
+                  <Image src="/img2.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg border shadow-md" alt="screenshot" />
+                </DialogTrigger>
+                <DialogContent className="max-w-screen-lg">
+                  <div className="pt-6">
+                    <Image src="/img2.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CarouselItem>
+            <CarouselItem>
+              <Dialog>
+                <DialogTrigger>
+                  <Image src="/img3.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg border shadow-md" alt="screenshot" />
+                </DialogTrigger>
+                <DialogContent className="max-w-screen-lg">
+                  <div className="pt-6">
+                    <Image src="/img3.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CarouselItem>
+            <CarouselItem>
+              <Dialog>
+                <DialogTrigger>
+                  <Image src="/img4.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg border shadow-md" alt="screenshot" />
+                </DialogTrigger>
+                <DialogContent className="max-w-screen-lg">
+                  <div className="pt-6">
+                    <Image src="/img4.png?v=1.1" width={2858} height={2032} className="w-full rounded-lg" alt="screenshot" />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className="absolute left-2" />
+          <CarouselNext className="absolute right-2" />
+        </Carousel>
+      </div>
     </div>
 
     <div className="container mx-auto space-y-5 pt-[20svh]">
@@ -176,8 +179,6 @@ export default function Home() {
           </Card>
         ))}
       </Marquee>
-      {/* <div className="grid gap-2 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-      </div> */}
     </div>
 
     <div className="container mx-auto pt-[10svh] text-center">
