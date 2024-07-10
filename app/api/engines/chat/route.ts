@@ -162,6 +162,7 @@ ${agent.agent.system}` : ''}` : undefined,
               ]
             })
           } catch (error: any) {
+            console.error(error)
             contents.push({
               type: 'tool_result',
               tool_use_id: content.id,

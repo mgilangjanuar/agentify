@@ -55,7 +55,6 @@ export const POST = async (req: Request) => {
       })
     }
     const json = await profile.json() as any
-    console.log(json)
     if (!await prisma.user.findFirst({
       where: {
         email: json.email

@@ -86,7 +86,7 @@ export default function Home() {
     </div>
 
     <div className="py-20 mt-10 bg-muted/40">
-      <div className="container mx-auto max-w-screen-xl">
+      <div className="container mx-auto max-w-screen-lg">
         <Carousel className="relative">
           <CarouselContent>
             <CarouselItem>
@@ -144,7 +144,7 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="container mx-auto space-y-5 pt-[20svh]">
+    <div className="container mx-auto space-y-5 pt-[20svh] max-w-screen-2xl">
       <Marquee pauseOnHover className="[--duration:90s]">
         {(agents || [])?.map(agent => (
           <Card key={agent.id} className="hover:cursor-pointer" onClick={() => r.push('/app/store')}>
