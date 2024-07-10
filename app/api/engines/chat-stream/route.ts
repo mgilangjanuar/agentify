@@ -4,6 +4,7 @@ import { Claude, ClaudeCompletionPayload, ClaudeContent, getAnthropicKey } from 
 import { cryptr } from '@/lib/crypto'
 import { prisma } from '@/lib/db'
 import { Google } from '@/lib/google'
+import { AgentifyScript } from '@/lib/script'
 import { Agent, InstalledAgent } from '@prisma/client'
 import { jsonrepair } from 'jsonrepair'
 import { NextResponse } from 'next/server'
@@ -81,6 +82,7 @@ export const POST = authorization(async (req: ReqWithUser) => {
         if (tool) {
           const input = content.input
           try {
+            // const output = await new AgentifyScript().run(tool.execute, [input, agent.configs])
             const output = await eval(`(${tool.execute})`)(input, agent.configs)
             console.log(`> running \`${content.name}\` successfully...`)
             contents.push({
