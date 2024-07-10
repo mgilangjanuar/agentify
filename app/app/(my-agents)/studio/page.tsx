@@ -21,8 +21,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { ClaudeCompletionPayload, ClaudeContent, ClaudeStreamResponse } from '@/lib/claude'
-import { ClaudeReceiver } from '@/lib/claude-receiver'
+import { ClaudeCompletionPayload, ClaudeContent } from '@/lib/claude'
 import { hit } from '@/lib/hit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CaretSortIcon, ReloadIcon } from '@radix-ui/react-icons'
@@ -73,15 +72,15 @@ export default function Studio() {
       setResultSchema(undefined)
     }
 
-    const resp = await hit('/api/engines/generate-stream', {
+    const resp = await hit('/api/engines/generate', {
       method: 'POST',
       body: JSON.stringify({
         ...data,
         messages: payload || messages,
       }),
     })
+    const result = await resp.json()
     if (!resp.ok) {
-      const result = await resp.json()
       if (!resp.ok) {
         toast('Error', {
           description: result.error?.message || result.error || 'Something went wrong',
@@ -90,82 +89,33 @@ export default function Studio() {
       }
     }
 
-    let json: ClaudeCompletionPayload['messages'] = [...(payload || messages), {
-      role: 'assistant',
-      content: []
-    }]
+    const resultResp = result as ClaudeCompletionPayload['messages']
+    setMessages(resultResp)
 
-    let text = ''
-    await ClaudeReceiver.consumeAsData(resp, data => {
-      const resp = data as ClaudeStreamResponse
-      if (resp.content_block) {
-        text = ''
-      }
-
-      if (resp.message?.role === 'user') {
-        json = [
-          ...(payload || messages),
-          resp.message as {
-            role: 'user' | 'assistant',
-            content: string | ClaudeContent[]
-          },
-          {
-            role: 'assistant',
-            content: []
+    for (const message of resultResp) {
+      if (Array.isArray(message.content)) {
+        for (const content of message?.content || []) {
+          if ((content as ClaudeContent).name === 'generate_tools') {
+            const result = (content as ClaudeContent).input as any
+            console.log(result)
+            agentForm.reset({
+              name: result.agent_name,
+              description: result.description,
+              system: '',
+              logoUrl: '',
+              isUsingBrowsing: false,
+              isPublic: false,
+            })
+            setUseBlank(false)
+            setResultSchema(result)
+            setMessages([])
+            setLoading(false)
+            return
           }
-        ]
-        setMessages(json)
-      }
-
-      const last = json[json.length - 1]
-      text += resp.delta?.text || resp.delta?.partial_json || ''
-      if (resp.content_block || text) {
-        try {
-          json = [...json.slice(0, -1), {
-            role: 'assistant',
-            content: resp.content_block ? [
-              ...last.content as ClaudeContent[] || [],
-              resp.content_block
-            ] : [
-              ...(last.content as ClaudeContent[] || []).slice(0, -1),
-              {
-                ...(last.content as ClaudeContent[] || [])[last.content.length - 1],
-                ...resp.delta?.text ? {
-                  text: text
-                } : resp.delta?.partial_json ? {
-                  input: JSON.parse(
-                    jsonrepair(text)
-                  )
-                } : {}
-              }
-            ]
-          }]
-          setMessages(json)
-        } catch (error) {
-          // ignore
         }
       }
-    })
-
-    if ((json.at(-1)?.content?.at(-1) as ClaudeContent).name === 'generate_tools') {
-      const result = (json.at(-1)?.content?.at(-1) as ClaudeContent)?.input as any
-      console.log(result)
-      agentForm.reset({
-        name: result.agent_name,
-        description: result.description,
-        system: '',
-        logoUrl: '',
-        isUsingBrowsing: false,
-        isPublic: false,
-      })
-      setUseBlank(false)
-      setResultSchema(result)
-      setMessages([])
-      setLoading(false)
-      return
     }
-
-    await generate(data, json)
+    await generate(data, resultResp)
   }
 
   const save = async (data: z.infer<typeof agentSchema>) => {
@@ -457,7 +407,7 @@ export default function Studio() {
               <ScrollBar orientation="vertical" />
               <div className="space-y-4 md:!max-h-[calc(100svh-290px)] px-2.5">
                 <Accordion type="multiple" className="w-full">
-                  {messages?.reduce(
+                  {messages?.filter(message => Array.isArray(message.content)).reduce(
                     (res, message, i) => [
                       ...res, ...(message.content as ClaudeContent[] || []).map(c => ({ ...c, id: c.id || i.toString() }))
                     ], [] as ClaudeContent[]

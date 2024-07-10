@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server'
 export const POST = authorization(async (req) => {
   const body = await req.json() as {
     useCase: string,
+    messages?: ClaudeCompletionPayload['messages']
   }
 
   if (!body.useCase) {
@@ -29,145 +30,27 @@ export const POST = authorization(async (req) => {
     })
   }
 
-  const messages: ClaudeCompletionPayload['messages'] = [
-    {
+  let messages: ClaudeCompletionPayload['messages'] = body.messages?.length ? body.messages : []
+  if (messages[0]?.role !== 'user') {
+    messages = [{
       role: 'user',
       content: `The use case: ${body.useCase}`
-    }
-  ]
+    }, ...messages]
+  }
 
-  let done = false
-  while (!done) {
-    if (messages.at(-1)?.role !== 'user') {
-      done = true
-      break
-    }
+  const contents: ClaudeContent[] = []
 
-    const resp = await new Claude(apiKey ? { apiKey } : undefined).completion({
-      model: 'claude-3-5-sonnet-20240620',
-      messages,
-      system: `You are a helpful assistant that can generate an autonomous agent.
-
-The final goal is to generate a list of tools that can be used in the autonomous agent with the \`generate_tools\` tool.
-
-Imagine the list of tools as a list of functions that can be used to perform different tasks from the given use case from the user. To make it easier, you should find the Rest API for the tools you want to generate; and use a simple \`fetch\` function form JavaScript to generate the execute property.
-
-Please utilize the provided tools to generate a valid list of tools that can be used by the autonomous agent. Specifically, the input_schema and execute properties must be valid and functional.`,
-      tool_choice: {
-        type: 'any'
-      },
-      tools: [
-        {
-          name: 'search',
-          description: 'Search for the information you need through a search engine.',
-          input_schema: {
-            type: 'object',
-            properties: {
-              query: {
-                type: 'string',
-                description: 'The search query you want to search for.'
-              }
-            },
-            required: ['query']
-          }
-        },
-        {
-          name: 'open_url',
-          description: 'Open a URL in a browser and return the result as text, image, or markdown.',
-          input_schema: {
-            type: 'object',
-            properties: {
-              url: {
-                type: 'string',
-                description: 'The valid URL you want to open.'
-              },
-              resultType: {
-                type: 'string',
-                description: 'The type of the search result you want to get. Possible value: `text`, `image`, or `markdown`.',
-                enum: ['text', 'image', 'markdown']
-              }
-            },
-            required: ['url', 'resultType']
-          }
-        },
-        {
-          name: 'generate_tools',
-          description: 'Generate a list of tools that can be used in the autonomous agent.',
-          input_schema: {
-            type: 'object',
-            properties: {
-              agent_name: {
-                type: 'string',
-                description: 'The name of the autonomous agent.'
-              },
-              description: {
-                type: 'string',
-                description: 'The description of the autonomous agent. Eg, what the agent can do, and what instructions it can follow.'
-              },
-              configs: {
-                type: 'array',
-                description: 'The list of global configurations or credentials that needed for the tools. Eg, API_KEY, Endpoint, etc.',
-                items: {
-                  type: 'object',
-                  properties: {
-                    name: {
-                      type: 'string',
-                      description: 'The name of the configuration.'
-                    },
-                    description: {
-                      type: 'string',
-                      description: 'The description of the configuration. Include the purpose and how to get it.'
-                    }
-                  },
-                }
-              },
-              tools: {
-                type: 'array',
-                description: 'The list of tools you want to generate.',
-                items: {
-                  type: 'object',
-                  properties: {
-                    name: {
-                      type: 'string',
-                      description: 'The name of the tool.'
-                    },
-                    description: {
-                      type: 'string',
-                      description: 'The description of the tool.'
-                    },
-                    input_schema: {
-                      type: 'string',
-                      description: 'The stringified JSON schema of the input for the tool.'
-                    },
-                    execute: {
-                      type: 'string',
-                      description: 'The javascript function that will execute the tool. You can use the built-in function of javascript. It has 2 parameters, input and configs. Eg, `function execute(input, configs) {\n  return fetch(\'https://api.example.com\', {\n    method: \'POST\',\n    body: JSON.stringify(input), \n    headers: { \'Content-Type\': \'application/json\' } \n  }).then(response => response.json())\n}`.'
-                    }
-                  },
-                  required: ['name', 'description', 'input_schema', 'execute']
-                }
-              }
-            },
-            required: ['agent_name', 'description', 'configs', 'tools']
-          }
-        }
-      ]
-    }).json()
-
-    if (!resp.content?.length) {
-      return NextResponse.json(resp, {
+  if (messages.at(-1)?.role === 'assistant') {
+    const botContents = messages.at(-1)?.content as ClaudeContent[]
+    if (!botContents?.length) {
+      return NextResponse.json({
+        error: 'Invalid content message'
+      }, {
         status: 500
       })
     }
 
-    messages.push({
-      role: 'assistant',
-      content: resp.content
-    })
-
-    const contents: ClaudeContent[] = []
-
-    for (const content of resp.content) {
+    for (const content of botContents) {
       if (content.type === 'text') {
         console.log(content.content)
       }
@@ -240,8 +123,7 @@ Please utilize the provided tools to generate a valid list of tools that can be 
         }
 
         if (content.name === 'generate_tools') {
-          done = true
-          return NextResponse.json(content.input)
+          return NextResponse.json(messages)
         }
       }
     }
@@ -249,6 +131,123 @@ Please utilize the provided tools to generate a valid list of tools that can be 
     messages.push({
       role: 'user',
       content: contents
+    })
+  }
+
+  const resp = await new Claude(apiKey ? { apiKey } : undefined).completion({
+    model: 'claude-3-5-sonnet-20240620',
+    messages,
+    system: `You are a helpful assistant that can generate an autonomous agent.
+
+The final goal is to generate a list of tools that can be used in the autonomous agent with the \`generate_tools\` tool.
+
+Imagine the list of tools as a list of functions that can be used to perform different tasks from the given use case from the user. To make it easier, you should find the Rest API for the tools you want to generate; and use a simple \`fetch\` function form JavaScript to generate the execute property.
+
+Please utilize the provided tools to generate a valid list of tools that can be used by the autonomous agent. Specifically, the input_schema and execute properties must be valid and functional.`,
+    tool_choice: {
+      type: 'any'
+    },
+    tools: [
+      {
+        name: 'search',
+        description: 'Search for the information you need through a search engine.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            query: {
+              type: 'string',
+              description: 'The search query you want to search for.'
+            }
+          },
+          required: ['query']
+        }
+      },
+      {
+        name: 'open_url',
+        description: 'Open a URL in a browser and return the result as text, image, or markdown.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            url: {
+              type: 'string',
+              description: 'The valid URL you want to open.'
+            },
+            resultType: {
+              type: 'string',
+              description: 'The type of the search result you want to get. Possible value: `text`, `image`, or `markdown`.',
+              enum: ['text', 'image', 'markdown']
+            }
+          },
+          required: ['url', 'resultType']
+        }
+      },
+      {
+        name: 'generate_tools',
+        description: 'Generate a list of tools that can be used in the autonomous agent.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            agent_name: {
+              type: 'string',
+              description: 'The name of the autonomous agent.'
+            },
+            description: {
+              type: 'string',
+              description: 'The description of the autonomous agent. Eg, what the agent can do, and what instructions it can follow.'
+            },
+            configs: {
+              type: 'array',
+              description: 'The list of global configurations or credentials that needed for the tools. Eg, API_KEY, Endpoint, etc.',
+              items: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    description: 'The name of the configuration.'
+                  },
+                  description: {
+                    type: 'string',
+                    description: 'The description of the configuration. Include the purpose and how to get it.'
+                  }
+                },
+              }
+            },
+            tools: {
+              type: 'array',
+              description: 'The list of tools you want to generate.',
+              items: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    description: 'The name of the tool.'
+                  },
+                  description: {
+                    type: 'string',
+                    description: 'The description of the tool.'
+                  },
+                  input_schema: {
+                    type: 'string',
+                    description: 'The stringified JSON schema of the input for the tool.'
+                  },
+                  execute: {
+                    type: 'string',
+                    description: 'The javascript function that will execute the tool. You can use the built-in function of javascript. It has 2 parameters, input and configs. Eg, `function execute(input, configs) {\n  return fetch(\'https://api.example.com\', {\n    method: \'POST\',\n    body: JSON.stringify(input), \n    headers: { \'Content-Type\': \'application/json\' } \n  }).then(response => response.json())\n}`.'
+                  }
+                },
+                required: ['name', 'description', 'input_schema', 'execute']
+              }
+            }
+          },
+          required: ['agent_name', 'description', 'configs', 'tools']
+        }
+      }
+    ]
+  }).json()
+
+  if (!resp.content?.length) {
+    return NextResponse.json(resp, {
+      status: 500
     })
   }
 
@@ -265,9 +264,9 @@ Please utilize the provided tools to generate a valid list of tools that can be 
     })
   }
 
-  return NextResponse.json({
-    error: 'Please try again.'
-  }, {
-    status: 500
+  messages.push({
+    role: 'assistant',
+    content: resp.content
   })
+  return NextResponse.json(messages)
 })
