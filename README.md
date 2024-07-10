@@ -28,6 +28,7 @@ Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
 - [x] Stream mode
 - [ ] Isolated script execution
 - [ ] Advanced mode Studio
+- [ ] Chat with multiple agents
 - [ ] Pagination, lol
 
 ## Requirements
