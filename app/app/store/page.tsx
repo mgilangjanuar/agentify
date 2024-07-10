@@ -7,6 +7,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { hit } from '@/lib/hit'
 import { Agent } from '@prisma/client'
 import { LucideBot } from 'lucide-react'
@@ -53,102 +54,105 @@ export default function Store() {
       </Badge>
     </div>
 
-    <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-      {(agents || [])?.map(agent => (
-        <Card key={agent.id}>
-          <CardHeader className={agent.installedAgents?.length ? 'hover:cursor-pointer' : ''} onClick={() => {
-            if (agent.installedAgents?.length) {
-              r.push(`/app/chat/${agent.installedAgents![0].id}`)
-            }
-          }}>
-            <div className="flex gap-4 flex-nowrap">
-              {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
-                <LucideBot className="h-6 w-6" />
-              </div>}
-              <div className="flex flex-col space-y-1.5 flex-1">
-                <CardTitle>{agent.name}</CardTitle>
-                <CardDescription className="line-clamp-2 min-h-[40px]">{agent.description}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardFooter className="flex gap-3 items-center justify-between flex-nowrap">
-            <p className="text-muted-foreground truncate text-xs">
-              By <span className="font-medium">{agent.user.name}</span>
-            </p>
-            {agent.installedAgents?.length ? <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="secondary" className="text-red-500">
-                  Uninstall
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-60">
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">Are you sure you want to uninstall this agent?</p>
-                  <div className="flex justify-end">
-                    <Button variant="destructive" onClick={async () => {
-                      await fetch(`/api/installs/${agent.installedAgents![0].id}`, { method: 'DELETE' })
-                      fetchAgents()
-                    }}>
-                      Uninstall
-                    </Button>
-                  </div>
+    <ScrollArea className="md:!h-[calc(100svh-196px)]">
+      <ScrollBar orientation="vertical" />
+      <div className="grid gap-2 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+        {(agents || [])?.map(agent => (
+          <Card key={agent.id}>
+            <CardHeader className={agent.installedAgents?.length ? 'hover:cursor-pointer' : ''} onClick={() => {
+              if (agent.installedAgents?.length) {
+                r.push(`/app/chat/${agent.installedAgents![0].id}`)
+              }
+            }}>
+              <div className="flex gap-4 flex-nowrap">
+                {agent.logoUrl ? <Image src={agent.logoUrl} width={50} height={50} className="rounded-lg !size-12" alt={agent.name} /> : <div className="!w-12 !h-12 flex items-center justify-center rounded-lg bg-muted">
+                  <LucideBot className="h-6 w-6" />
+                </div>}
+                <div className="flex flex-col space-y-1.5 flex-1">
+                  <CardTitle>{agent.name}</CardTitle>
+                  <CardDescription className="line-clamp-2 min-h-[40px]">{agent.description}</CardDescription>
                 </div>
-              </PopoverContent>
-            </Popover> : <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="default">
-                  Install
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader className="!text-left">
-                  <DialogTitle>
-                    {agent.name}
-                  </DialogTitle>
-                  <DialogDescription>
-                    {agent.description}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="flex items-center flex-wrap gap-2">
-                    <Label>Available Tools:</Label>
-                    <div className="flex gap-2 flex-wrap">
-                      {(agent.tools as any[])?.map(tool => (
-                        <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
-                      ))}
-                      {agent.isUsingBrowsing ? <Badge variant="secondary">browsing</Badge> : <></>}
+              </div>
+            </CardHeader>
+            <CardFooter className="flex gap-3 items-center justify-between flex-nowrap">
+              <p className="text-muted-foreground truncate text-xs">
+                By <span className="font-medium">{agent.user.name}</span>
+              </p>
+              {agent.installedAgents?.length ? <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="secondary" className="text-red-500">
+                    Uninstall
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-60">
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">Are you sure you want to uninstall this agent?</p>
+                    <div className="flex justify-end">
+                      <Button variant="destructive" onClick={async () => {
+                        await fetch(`/api/installs/${agent.installedAgents![0].id}`, { method: 'DELETE' })
+                        fetchAgents()
+                      }}>
+                        Uninstall
+                      </Button>
                     </div>
                   </div>
-                  <form className="grid gap-4" onSubmit={async e => {
-                    e.preventDefault()
-                    const data = Object.fromEntries(new FormData(e.currentTarget).entries())
-                    await hit('/api/installs', {
-                      method: 'POST',
-                      body: JSON.stringify({ agentId: agent.id, configs: data }),
-                    })
-                    await fetchAgents()
-                  }}>
-                    {(agent.configs as any[])?.map(config => (
-                      <div key={config.id} className="space-y-2">
-                        <Label className="text-sm font-medium">{config.name}</Label>
-                        <Input name={config.name} />
-                        <p className="text-muted-foreground text-xs">
-                          {config.description}
-                        </p>
+                </PopoverContent>
+              </Popover> : <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="default">
+                    Install
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="!text-left">
+                    <DialogTitle>
+                      {agent.name}
+                    </DialogTitle>
+                    <DialogDescription>
+                      {agent.description}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="flex items-center flex-wrap gap-2">
+                      <Label>Available Tools:</Label>
+                      <div className="flex gap-2 flex-wrap">
+                        {(agent.tools as any[])?.map(tool => (
+                          <Badge variant="secondary" key={tool.name}>{tool.name}</Badge>
+                        ))}
+                        {agent.isUsingBrowsing ? <Badge variant="secondary">browsing</Badge> : <></>}
                       </div>
-                    ))}
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button type="submit">Install</Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </form>
-                </div>
-              </DialogContent>
-            </Dialog>}
-          </CardFooter>
-        </Card>
-      ))}
-    </div>
+                    </div>
+                    <form className="grid gap-4" onSubmit={async e => {
+                      e.preventDefault()
+                      const data = Object.fromEntries(new FormData(e.currentTarget).entries())
+                      await hit('/api/installs', {
+                        method: 'POST',
+                        body: JSON.stringify({ agentId: agent.id, configs: data }),
+                      })
+                      await fetchAgents()
+                    }}>
+                      {(agent.configs as any[])?.map(config => (
+                        <div key={config.id} className="space-y-2">
+                          <Label className="text-sm font-medium">{config.name}</Label>
+                          <Input name={config.name} />
+                          <p className="text-muted-foreground text-xs">
+                            {config.description}
+                          </p>
+                        </div>
+                      ))}
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button type="submit">Install</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </form>
+                  </div>
+                </DialogContent>
+              </Dialog>}
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </ScrollArea>
   </main>
 }
