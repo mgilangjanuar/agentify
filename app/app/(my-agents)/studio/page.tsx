@@ -471,9 +471,26 @@ export default function Studio() {
                     {(message.content as ClaudeContent[] || []).map((content, ii) => (
                       <div key={`${i}:${ii}`} className="flex flex-nowrap gap-2 items-start">
                         <LucideBot className="w-4 h-4 mt-1.5" />
-                        {content.name && content.type === 'tool_use' ? <p className="flex-1">
-                          processing: {content.name}...
-                        </p> : <div className="flex-1 grid grid-cols-1">
+                        {content.name && content.type === 'tool_use' ? <div className="flex-1">
+                          <Collapsible>
+                            <CollapsibleTrigger asChild>
+                              <p className="underline underline-offset-4 hover:cursor-pointer">
+                                run: {content.name}...
+                              </p>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <pre className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
+                                {(() => {
+                                  try {
+                                    return JSON.stringify(content.input, null, 2)
+                                  } catch (error) {
+                                    return content.text || '[done]'
+                                  }
+                                })()}
+                              </pre>
+                            </CollapsibleContent>
+                          </Collapsible>
+                        </div> : <div className="flex-1 grid grid-cols-1">
                           <Collapsible>
                             <CollapsibleTrigger asChild>
                               <p className="underline underline-offset-4 hover:cursor-pointer">
