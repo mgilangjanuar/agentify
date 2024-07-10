@@ -25,6 +25,7 @@ Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
 ## Requirements
 
 - [agentify-browser](https://github.com/mgilangjanuar/agentify-browser)
+- [agentify-script](https://github.com/mgilangjanuar/agentify-script)
 - [PostgreSQL](https://www.postgresql.org)
 - [bun](https://bun.sh) (recommended)
 
@@ -67,6 +68,9 @@ bun run build && bun run start
 
 ## Environment Variables
 
+<!-- SCRIPT_URL=
+SCRIPT_SECRET="xxx" -->
+
 | Variable | Description | Required |
 | --- | --- | --- |
 | `NODE_ENV` | The environment mode | ✅ |
@@ -80,6 +84,8 @@ bun run build && bun run start
 | `GOOGLE_SEARCH_CX` | The Google Search CX | ✅ |
 | `BROWSER_URL` | The Agentify Browser URL | ✅ |
 | `BROWSER_SECRET` | The Agentify Browser secret | ✅ |
+| `SCRIPT_URL` | The Agentify Script Runner URL | ✅ |
+| `SCRIPT_SECRET` | The Agentify Script Runner secret | ✅ |
 | `ANTHROPIC_API_KEY` | The Anthropic API key | ✅ |
 
 ## Contributors
