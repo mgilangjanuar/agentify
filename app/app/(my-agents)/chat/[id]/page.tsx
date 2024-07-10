@@ -127,6 +127,7 @@ export default function ChatAgent() {
             content: []
           }
         ]
+        setMessages(json)
       }
 
       const last = json[json.length - 1]

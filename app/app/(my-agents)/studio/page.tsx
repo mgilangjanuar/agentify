@@ -26,7 +26,7 @@ import { hit } from '@/lib/hit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CaretSortIcon, ReloadIcon } from '@radix-ui/react-icons'
 import { jsonrepair } from 'jsonrepair'
-import { LucideChevronRight, LucideSave, LucideSparkles } from 'lucide-react'
+import { LucideBot, LucideChevronRight, LucideSave, LucideSparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -129,6 +129,7 @@ export default function Studio() {
             content: []
           }
         ]
+        setMessages(json)
       }
 
       const last = json[json.length - 1]
@@ -465,8 +466,38 @@ export default function Studio() {
             <ScrollArea className="w-full truncate">
               <ScrollBar orientation="vertical" />
               <div className="space-y-4 md:!max-h-[calc(100svh-290px)] px-2.5">
-                {messages?.map((message, index) => (
-                  <div key={index}></div>
+                {messages?.map((message, i) => (
+                  <>
+                    {(message.content as ClaudeContent[] || []).map((content, ii) => (
+                      <div key={`${i}:${ii}`} className="flex flex-nowrap gap-2 items-start">
+                        <LucideBot className="w-4 h-4 mt-1.5" />
+                        {content.name && content.type === 'tool_use' ? <p className="flex-1">
+                          processing: {content.name}...
+                        </p> : <div className="flex-1 grid grid-cols-1">
+                          <Collapsible>
+                            <CollapsibleTrigger asChild>
+                              <p className="underline underline-offset-4 hover:cursor-pointer">
+                                return: {content.type} ({(content.content as ClaudeContent[] || []).map(c => c.type).join(', ')})
+                              </p>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              {(content.content as ClaudeContent[] || []).map((content, iii) => (
+                                <pre key={iii} className="w-full text-sm overflow-x-auto no-scrollbar font-mono p-4 bg-muted border rounded-lg mt-2">
+                                  {(() => {
+                                    try {
+                                      return JSON.stringify(JSON.parse(jsonrepair(content.text!)), null, 2)
+                                    } catch (error) {
+                                      return content.text || '[done]'
+                                    }
+                                  })()}
+                                </pre>
+                              ))}
+                            </CollapsibleContent>
+                          </Collapsible>
+                        </div>}
+                      </div>
+                    ))}
+                  </>
                 ))}
               </div>
             </ScrollArea>
