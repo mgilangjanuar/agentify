@@ -25,8 +25,6 @@ Live demo: [agentify.appledore.dev](https://agentify.appledore.dev)
 
 - [agentify-browser](https://github.com/mgilangjanuar/agentify-browser)
 - [PostgreSQL](https://www.postgresql.org)
-- [Prisma](https://prisma.io)
-- [Next.js](https://nextjs.org)
 - [bun](https://bun.sh) (recommended)
 
 ## Installation and Setup
