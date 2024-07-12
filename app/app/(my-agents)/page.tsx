@@ -53,15 +53,15 @@ export default function MyAgents() {
     fetchInstalledAgents()
   }, [fetchInstalledAgents])
 
-  return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6">
-    <div className="flex justify-between gap-2 flex-wrap items-center">
+  return <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6 !pr-0">
+    <div className="flex justify-between gap-2 flex-wrap items-center pr-4 lg:pr-6">
       <h1 className="text-xl font-semibold md:text-2xl">
         My Agents
       </h1>
     </div>
 
     <ScrollArea className="md:!h-[calc(100svh-150px)]">
-      <div className="space-y-10">
+      <div className="space-y-10 pr-4 lg:pr-6">
         {installedAgents &&  !installedAgents?.length ? <div className="grid gap-4">
           <div className="grid gap-2 xl:grid-cols-3 grid-cols-2">
             <Card className="hover:cursor-pointer w-full" onClick={() => r.push('/app/settings')}>

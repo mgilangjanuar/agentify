@@ -248,6 +248,7 @@ Please utilize the provided tools to generate a valid list of tools that can be 
       }
     ]
   }).stream(contents.length ? {
+    type: 'content_block_delta',
     message: {
       role: 'user',
       content: contents

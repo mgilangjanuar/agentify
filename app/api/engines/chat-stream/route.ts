@@ -251,6 +251,7 @@ ${agent.agent.system}` : ''}` : undefined,
       })),
     ]
   }).stream(contents.length ? {
+    type: 'content_block_delta',
     message: {
       role: 'user',
       content: contents

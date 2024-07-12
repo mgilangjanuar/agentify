@@ -161,7 +161,7 @@ export default function Chat() {
           New Chat
         </Button>
         <ScrollArea className="!h-[calc(100svh-190px)] mt-2 w-full truncate">
-          <div className="flex flex-col gap-1 min-w-0">
+          <div className="grid grid-cols-1 gap-1 min-w-0">
             {histories.map((history, index) => (
               <div
                 key={index}
@@ -236,7 +236,7 @@ export default function Chat() {
                   </div>
                 </div> : message.content.map((content, i) => <div key={i}>
                   {content.type === 'text' ? <Markdown content={content.text!} /> : <></>}
-                  {content.type === 'tool_use' ? <Collapsible className="space-y-2">
+                  {content.type === 'tool_use' ? <Collapsible className="space-y-2 grid grid-cols-1">
                     <CollapsibleTrigger asChild>
                       <div className="flex items-center gap-2 hover:cursor-pointer">
                         <LucideBot className="h-3.5 w-3.5" />

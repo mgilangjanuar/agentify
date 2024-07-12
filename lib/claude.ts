@@ -68,14 +68,14 @@ export interface ClaudeResponse {
 export interface ClaudeStreamResponse {
   type: string,
   message?: {
-    id: string,
-    type: string,
-    role: string,
-    content: ClaudeContent[],
-    model: string,
-    stop_reason: string | null,
-    stop_sequence: string | null,
-    usage: {
+    id?: string,
+    type?: string,
+    role?: string,
+    content?: ClaudeContent[],
+    model?: string,
+    stop_reason?: string | null,
+    stop_sequence?: string | null,
+    usage?: {
       input_tokens?: number,
       output_tokens?: number
     }
@@ -140,7 +140,7 @@ export class Claude {
     return await resp.json() as ClaudeResponse
   }
 
-  async stream(initData?: any) {
+  async stream(initData?: ClaudeStreamResponse) {
     if (!this.payload) {
       throw new Error('No payload')
     }
