@@ -40,7 +40,7 @@ export default function Home() {
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-6xl">
           No-Code AI Application Builder Platform
         </h1>
-        <p className="leading-7 !mt-6 text-muted-foreground lg:text-xl px-2">
+        <p className="leading-7 !mt-6 text-muted-foreground lg:text-xl">
           Create, publish, and install any LLM agent with <strong>Claude 3.5 Sonnet.</strong>
         </p>
         <div className="!mt-8 flex gap-1 items-center justify-center">
