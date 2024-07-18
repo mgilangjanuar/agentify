@@ -82,6 +82,11 @@ export default function Footer() {
       <p className="leading-7 text-muted-foreground text-center mt-16">
         © 2024 Agentify. All rights reserved.
       </p>
+      <p className="leading-7 text-muted-foreground text-center flex w-full justify-center mt-4">
+        <a href="https://vercel.com?utm_source=appledore-dev&utm_campaign=oss" target="_blank" rel="noopener noreferrer" className="flex justify-center">
+          <Image src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" alt="Powered by Vercel" width={212} height={44} className="h-auto w-[75%]" />
+        </a>
+      </p>
     </footer>
   </div>
 }

@@ -283,9 +283,9 @@ export default function ChatAgent() {
             <LucideTrash2 className="h-4 w-4 text-red-500" />
           </Button> : <></>}
         </CardHeader>
-        <CardContent className="pb-20">
+        <CardContent className="pb-20 pr-0">
           <ScrollArea className="!h-[calc(100svh-290px)]">
-            <div className="space-y-6 px-2.5">
+            <div className="space-y-6 pr-6">
               {!messages?.length ? <div className="text-sm text-muted-foreground space-y-4">
                 <p>
                   {agent?.agent.description}
@@ -360,7 +360,7 @@ export default function ChatAgent() {
             <ScrollBar orientation="vertical" />
           </ScrollArea>
         </CardContent>
-        <CardFooter className="absolute bottom-0.5 right-0.5 left-0.5 bg-background">
+        <CardFooter className="absolute bottom-0.5 right-0 left-0 bg-background">
           <div className="relative w-full pt-2">
             <Textarea
               ref={ref}

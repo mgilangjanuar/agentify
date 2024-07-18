@@ -1,10 +1,9 @@
 'use client'
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -13,17 +12,19 @@ import { Separator } from '@/components/ui/separator'
 import { useUser } from '@/components/use-user'
 import { hit } from '@/lib/hit'
 import { Agent, InstalledAgent } from '@prisma/client'
-import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2, LucideTriangleAlert, RocketIcon } from 'lucide-react'
+import { LucideBot, LucideChevronRight, LucideEdit3, LucidePlus, LucideTrash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export default function MyAgents() {
   const { user } = useUser()
   const r = useRouter()
   const [installedAgents, setInstalledAgents] = useState<(InstalledAgent & { agent: Agent })[]>()
   const [agents, setAgents] = useState<(Agent & { installedAgents?: { id: string }[] })[]>()
+  const [openInstall, setOpenInstall] = useState<string>()
 
   const fetchAgents = useCallback(async () => {
     if (user) {
@@ -173,7 +174,7 @@ export default function MyAgents() {
                         </div>
                       </div>
                     </PopoverContent>
-                  </Popover> : <Dialog>
+                  </Popover> : <Dialog open={openInstall === agent.id} onOpenChange={o => setOpenInstall(o ? agent.id : undefined)}>
                     <DialogTrigger asChild>
                       <Button variant="default">
                         Install
@@ -201,12 +202,21 @@ export default function MyAgents() {
                         <form className="grid gap-4" onSubmit={async e => {
                           e.preventDefault()
                           const data = Object.fromEntries(new FormData(e.currentTarget).entries())
+                          for (const conf of (agent.configs as any[]) || []) {
+                            if (!data[conf.name]) {
+                              toast('Error', {
+                                description: 'Please fill all the required fields',
+                              })
+                              return
+                            }
+                          }
                           await hit('/api/installs', {
                             method: 'POST',
                             body: JSON.stringify({ agentId: agent.id, configs: data }),
                           })
                           fetchInstalledAgents()
                           fetchAgents()
+                          setOpenInstall(undefined)
                         }}>
                           {(agent.configs as any[])?.map(config => (
                             <div key={config.id} className="space-y-2">
@@ -218,9 +228,7 @@ export default function MyAgents() {
                             </div>
                           ))}
                           <DialogFooter>
-                            <DialogClose asChild>
-                              <Button type="submit">Install</Button>
-                            </DialogClose>
+                            <Button type="submit">Install</Button>
                           </DialogFooter>
                         </form>
                       </div>

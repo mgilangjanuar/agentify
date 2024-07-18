@@ -169,7 +169,7 @@ export const POST = authorization(async (req: ReqWithUser) => {
                 content: [
                   {
                     type: 'text',
-                    text: resp as string
+                    text: resp?.slice(0, 50_000) as string
                   }
                 ]
               })

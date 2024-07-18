@@ -235,7 +235,7 @@ ${agent.agent.system}` : ''}` : undefined,
                 content: [
                   {
                     type: 'text',
-                    text: resp as string
+                    text: resp?.slice(0, 50_000) as string
                   }
                 ]
               })
