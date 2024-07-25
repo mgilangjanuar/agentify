@@ -82,7 +82,7 @@ export default function Footer() {
       <p className="leading-7 text-muted-foreground text-center mt-16">
         © 2024 Agentify. All rights reserved.
       </p>
-      <p className="leading-7 text-muted-foreground text-center flex w-full justify-center mt-4">
+      <p className="leading-7 text-muted-foreground text-center flex w-full justify-center mt-2.5">
         Powered by{' '}
         <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
           Cloudflare
