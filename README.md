@@ -1,4 +1,4 @@
-[![vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)](https://vercel.com/?utm_source=appledore-dev&utm_campaign=oss)
+<!-- [![vercel](https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg)](https://vercel.com/?utm_source=appledore-dev&utm_campaign=oss) -->
 
 # Agentify
 
