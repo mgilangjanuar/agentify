@@ -50,7 +50,7 @@ export default function Markdown({ content }: { content: string }) {
         </p>
       },
       a({ children, href }) {
-        return <a href={href} className="underline">
+        return <a href={href} className="underline underline-offset-4">
           {children}
         </a>
       },
