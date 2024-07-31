@@ -85,7 +85,7 @@ export default function Home() {
       />
     </div>
 
-    <div className="gap-4 pt-24 flex justify-center flex-col">
+    <div className="gap-4 py-20 flex justify-center text-center items-center flex-col">
       <p className="text-sm text-muted-foreground">
         Sponsored by
       </p>
