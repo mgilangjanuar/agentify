@@ -77,20 +77,21 @@ export default function Home() {
             </div>
           </DialogContent>
         </Dialog>
-        <div className="space-y-4 pt-10 md:pt-24">
-          <p className="text-sm text-muted-foreground">
-            Sponsored by
-          </p>
-          <div>
-            <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
-          </div>
-        </div>
       </div>
       <DotPattern
         className={cn(
           "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
         )}
       />
+    </div>
+
+    <div className="gap-4 pt-24 flex justify-center flex-col">
+      <p className="text-sm text-muted-foreground">
+        Sponsored by
+      </p>
+      <div>
+        <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
+      </div>
     </div>
 
     <div className="py-20 mt-10 bg-muted/40">
