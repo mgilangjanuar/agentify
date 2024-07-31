@@ -90,7 +90,9 @@ export default function Home() {
         Sponsored by
       </p>
       <div>
-        <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
+        <a href="https://sourcegraph.com/cody" target="_blank" rel="noopener noreferrer" className="hover:cursor-pointer">
+          <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
+        </a>
       </div>
     </div>
 
