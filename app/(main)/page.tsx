@@ -77,11 +77,13 @@ export default function Home() {
             </div>
           </DialogContent>
         </Dialog>
-        <div className="space-y-4 pt-32">
+        <div className="space-y-4 pt-10 md:pt-24">
           <p className="text-sm text-muted-foreground">
             Sponsored by
           </p>
-          <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
+          <div>
+            <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sourcegraph-logo-light.svg/1280px-Sourcegraph-logo-light.svg.png" width={1267} height={216} alt="sourcegraph" className="max-w-36" />
+          </div>
         </div>
       </div>
       <DotPattern
